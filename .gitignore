@@ -1,0 +1,63 @@
+/node_modules 
+.env.local 
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.jks
+*.keystore
+*.kdbx
+*.secret
+*.secrets
+secrets.*
+credentials.*
+
+# Databases and dumps
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+*.bak
+
+# Logs and local reports
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build/output artifacts
+.next/
+dist/
+build/
+coverage/
+
+# Large binary/media files
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+*.iso
+*.dmg
+*.exe
+*.msi
+*.dll
+*.so
+*.dylib
+*.bin
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.psd
+*.ai
