@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
       lang="pt-BR"
       className={`${plusJakarta.variable} ${playfair.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-[#F9F7F4] text-stone-900">
+      <body className="min-h-full bg-white text-stone-900">
         <div aria-hidden="true" className="grain-overlay" />
         <Header />
         <main>{children}</main>

@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import CheckoutForm from "@/components/checkout-form";
+import ProductImageWithFallback from "@/components/product-image-with-fallback";
 import { getProdutoBySlug } from "@/lib/produtos";
 
 function formatPrice(priceInCents) {
@@ -53,10 +53,10 @@ export default async function CheckoutPage({ searchParams }) {
         <aside className="lg:col-span-2">
           <div className="sticky top-24 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="relative aspect-square bg-slate-100 sm:aspect-[4/3]">
-              <Image
+              <ProductImageWithFallback
                 src={produto.imagem_url}
                 alt={produto.nome}
-                fill
+                tone="slate"
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover"
               />

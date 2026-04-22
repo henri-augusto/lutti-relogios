@@ -25,19 +25,32 @@ const items = [
 export default function Benefits() {
   return (
     <section aria-labelledby="benefits-heading">
-      <div className="mb-10 flex items-center gap-4 border-t border-stone-200/60 pt-10">
+      <div data-reveal className="mb-10 space-y-3">
         <p
-          id="benefits-heading"
+          data-reveal
+          data-reveal-delay={40}
           className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400"
         >
           Por que escolher a Luti
         </p>
-        <div className="flex-1 border-t border-stone-200/40" aria-hidden="true" />
+        <h2
+          id="benefits-heading"
+          data-reveal
+          data-reveal-delay={90}
+          className="max-w-xl font-serif text-3xl font-semibold leading-tight text-stone-900 sm:text-4xl"
+        >
+          Benefícios reais para quem compra com confiança.
+        </h2>
       </div>
 
       <div className="grid gap-10 sm:grid-cols-3">
-        {items.map((item) => (
-          <article key={item.number} className="group">
+        {items.map((item, index) => (
+          <article
+            key={item.number}
+            data-reveal
+            data-reveal-delay={index * 100}
+            className="group"
+          >
             <span
               className="font-serif text-5xl font-bold text-stone-200 transition-colors duration-300 group-hover:text-amber-200/70"
               aria-hidden="true"

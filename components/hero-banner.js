@@ -1,11 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const whatsappHref = `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5500000000000"}`;
 
 export default function HeroBanner() {
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 pb-8 pt-14 sm:px-6 sm:pt-20 lg:px-8 lg:pt-24">
-      <div className="flex flex-col gap-16 lg:flex-row lg:items-center lg:gap-10">
+    <section className="flex min-h-dvh w-full flex-col">
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 py-14 pt-24 sm:px-6 sm:py-16 sm:pt-28 lg:px-8 lg:py-20 lg:pt-32">
+      <div className="flex flex-col gap-16 lg:flex-row lg:items-center lg:gap-0">
 
         {/* ── Text column ── */}
         <div className="flex-1 space-y-8">
@@ -14,7 +16,7 @@ export default function HeroBanner() {
           <div className="anim-fade-up anim-delay-1 inline-flex items-center gap-2 rounded-full border border-stone-300/50 bg-stone-100/60 px-4 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-500">
-              Curadoria Premium · 2025
+              Curadoria Premium · since 1994
             </span>
           </div>
 
@@ -62,52 +64,36 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* ── Feature cards — Z-Cascade, Double-Bezel ── */}
-        <div className="anim-fade-up anim-delay-5 hidden w-[17.5rem] shrink-0 flex-col gap-4 lg:flex">
-
-          {/* Card 1 — Garantia */}
-          <div className="rounded-[1.75rem] border border-stone-200/50 bg-stone-100/60 p-1.5">
-            <div className="rounded-[calc(1.75rem-0.375rem)] bg-white p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)]">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50">
-                <svg className="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                </svg>
+        {/* ── Hero collage: shell + Z-axis cascade (lg+); sem núcleo interno ── */}
+        <div className="anim-fade-up anim-delay-5 relative w-full min-w-0 lg:-ml-8 lg:w-[min(100%,26.5rem)] lg:flex-[0_0_auto] lg:shrink-0 xl:-ml-11">
+            <div className="relative h-[340px] w-full overflow-hidden rounded-[calc(2rem-5px)] sm:h-[400px] lg:h-[500px]">
+              <div className="absolute left-1 top-2 z-0 h-[52%] w-[56%] sm:left-1.5 sm:top-2.5 lg:left-2 lg:top-3 lg:-rotate-[1.1deg]">
+                <div className="relative h-full w-full overflow-hidden rounded-[1.35rem] shadow-[0_28px_72px_-40px_rgba(28,25,23,0.14)]">
+                  <Image
+                    src="/image-hero.jpeg"
+                    alt="Relógio premium em destaque"
+                    fill
+                    priority
+                    className="object-cover object-[28%_22%]"
+                    sizes="(min-width: 1024px) 20rem, 45vw"
+                  />
+                </div>
               </div>
-              <p className="font-serif text-2xl font-bold text-stone-900">12 meses</p>
-              <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-600/80">de garantia</p>
-              <p className="mt-2.5 text-sm leading-relaxed text-stone-400">Suporte especializado incluso em toda compra.</p>
-            </div>
-          </div>
-
-          {/* Card 2 — Envio (offset right for Z-cascade depth) */}
-          <div className="ml-6 rounded-[1.75rem] border border-amber-100/60 bg-amber-50/50 p-1.5">
-            <div className="rounded-[calc(1.75rem-0.375rem)] bg-white p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)]">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-stone-50">
-                <svg className="h-5 w-5 text-stone-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-                </svg>
+              <div className="absolute bottom-2 right-4 z-10 h-[52%] w-[56%] sm:bottom-2.5 sm:right-5 lg:bottom-3 lg:right-7 lg:rotate-[1.1deg]">
+                <div className="relative h-full w-full overflow-hidden rounded-[1.35rem] shadow-[0_32px_80px_-42px_rgba(28,25,23,0.16)]">
+                  <Image
+                    src="/image-nossa-historia.jpeg"
+                    alt="Nossa história"
+                    fill
+                    className="object-cover object-center"
+                    sizes="(min-width: 1024px) 20rem, 45vw"
+                  />
+                </div>
               </div>
-              <p className="font-serif text-2xl font-bold text-stone-900">Mesmo dia</p>
-              <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-600/80">envio expresso</p>
-              <p className="mt-2.5 text-sm leading-relaxed text-stone-400">Pedidos aprovados até meio-dia saem hoje.</p>
             </div>
-          </div>
-
-          {/* Card 3 — Atendimento (slight mid-offset) */}
-          <div className="ml-3 rounded-[1.75rem] border border-stone-200/50 bg-stone-50/60 p-1.5">
-            <div className="rounded-[calc(1.75rem-0.375rem)] bg-white p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.95)]">
-              <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50">
-                <svg className="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-                </svg>
-              </div>
-              <p className="font-serif text-2xl font-bold text-stone-900">Premium</p>
-              <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-600/80">atendimento</p>
-              <p className="mt-2.5 text-sm leading-relaxed text-stone-400">Consultor exclusivo pelo WhatsApp para cada cliente.</p>
-            </div>
-          </div>
         </div>
 
+      </div>
       </div>
     </section>
   );
