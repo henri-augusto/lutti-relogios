@@ -27,21 +27,37 @@ async function FeaturedProductsContent() {
 
 export default function HomeFeaturedSection() {
   return (
-    <section className="space-y-6">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <h2 className="font-serif text-2xl font-bold text-slate-900 sm:text-3xl">
-            Produtos em destaque
+    <section className="space-y-8" aria-labelledby="featured-heading">
+      <div>
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">
+          Seleção especial
+        </p>
+        <div className="flex items-end justify-between gap-4">
+          <h2
+            id="featured-heading"
+            className="font-serif text-3xl font-bold text-stone-900 sm:text-4xl"
+          >
+            Em destaque agora
           </h2>
-          <p className="text-sm text-slate-600">Selecao exclusiva com os modelos mais desejados.</p>
+          <Link
+            href="/catalogo"
+            className="group inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-stone-300/60 px-4 py-2 text-sm font-medium text-stone-600 transition-all duration-300 hover:border-stone-400 hover:bg-stone-100/60 hover:text-stone-900"
+          >
+            Ver catálogo
+            <svg
+              className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
         </div>
-        <Link
-          href="/catalogo"
-          className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-        >
-          Ver todos
-        </Link>
       </div>
+
       <Suspense fallback={<ProductGridSkeleton count={3} />}>
         <FeaturedProductsContent />
       </Suspense>
