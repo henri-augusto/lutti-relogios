@@ -1,6 +1,7 @@
-import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import ComprarButton from "@/components/comprar-button";
+import ProductImageWithFallback from "@/components/product-image-with-fallback";
 import WhatsAppButton from "@/components/whatsapp-button";
 import { getProdutoBySlug, getProdutos } from "@/lib/produtos";
 
@@ -60,10 +61,10 @@ export default async function ProdutoPage({ params }) {
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <article className="grid gap-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8 lg:grid-cols-2">
         <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-100">
-          <Image
+          <ProductImageWithFallback
             src={produto.imagem_url}
             alt={produto.nome}
-            fill
+            tone="slate"
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover"
             priority
@@ -91,6 +92,14 @@ export default async function ProdutoPage({ params }) {
               estoque={produto.estoque}
             />
           </div>
+
+          <p className="text-xs text-slate-500">
+            Cadastro opcional:{" "}
+            <Link href="/cadastro" className="font-semibold text-slate-800 underline underline-offset-2">
+              preencher dados
+            </Link>
+            .
+          </p>
         </div>
       </article>
     </div>

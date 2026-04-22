@@ -1,4 +1,4 @@
-import ProductGrid from "@/components/product-grid";
+import CatalogProductGrid from "@/components/catalog-product-grid";
 import ProductGridSkeleton from "@/components/product-grid-skeleton";
 import ProductsErrorBanner from "@/components/products-error-banner";
 import { ProductsFetchError, getProdutos } from "@/lib/produtos";
@@ -28,7 +28,7 @@ async function CatalogGrid() {
     return <ProductsErrorBanner message={fetchError} />;
   }
 
-  return <ProductGrid products={produtos} />;
+  return <CatalogProductGrid products={produtos} />;
 }
 
 export default function CatalogoPage() {
@@ -40,7 +40,14 @@ export default function CatalogoPage() {
           Encontre o modelo ideal para seu estilo com compra segura e atendimento dedicado.
         </p>
       </div>
-      <Suspense fallback={<ProductGridSkeleton count={6} />}>
+      <Suspense
+        fallback={
+          <ProductGridSkeleton
+            count={8}
+            gridClassName="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          />
+        }
+      >
         <CatalogGrid />
       </Suspense>
     </div>

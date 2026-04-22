@@ -3,6 +3,7 @@ import Link from "next/link";
 const links = [
   { href: "/", label: "Início" },
   { href: "/catalogo", label: "Catálogo" },
+  { href: "/cadastro", label: "Cadastro" },
 ];
 
 const whatsappHref = `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5500000000000"}`;

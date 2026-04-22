@@ -1,7 +1,10 @@
-export default function ProductGridSkeleton({ count = 6 }) {
+export default function ProductGridSkeleton({
+  count = 6,
+  gridClassName = "grid gap-5 sm:grid-cols-2 lg:grid-cols-3",
+}) {
   return (
     <div
-      className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+      className={gridClassName}
       aria-busy="true"
       aria-label="Carregando produtos"
     >

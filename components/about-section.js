@@ -1,17 +1,21 @@
+import Image from "next/image";
+
 const aboutBlocks = [
   {
-    label: "Nossa Historia",
-    title: "Desde 1994 no mercado de relogios originais.",
+    label: "Nossa História",
+    title: "Desde 1994 no mercado de relógios originais.",
     description:
-      "Desde 1994, iniciamos nossa trajetoria no tradicional Shopping Mundo Oriental, sempre dedicados ao mercado de relogios originais. Atuavamos com vendas no atacado e varejo, consolidando nossa reputacao como referencia em qualidade e confianca.",
-    accentClass: "bg-[#FBF3DB] text-[#956400]",
+      "Desde 1994, iniciamos nossa trajetória no tradicional Shopping Mundo Oriental, sempre dedicados ao mercado de relógios originais. Atuavamos com vendas no atacado e varejo, consolidando nossa reputação como referência em qualidade e confiança.",
+    imageSrc: "/image-nossa-historia.jpeg",
+    imageAlt: "Vitrine de relógios originais em exposição",
   },
   {
     label: "Quem somos hoje",
-    title: "Distribuicao oficial com preco direto de fabrica.",
+    title: "Distribuição oficial com preço direto de fábrica.",
     description:
-      "Com o passar do tempo, evoluimos e expandimos nossas operacoes. Hoje, somos distribuidores oficiais de diversas marcas renomadas, oferecendo uma ampla selecao de relogios originais com precos diretos de fabrica. Nosso compromisso e entregar produtos de alta qualidade, atendendo tanto lojistas quanto sacoleiros e feirantes. Sempre com excelencia e com as melhores condicoes do mercado.",
-    accentClass: "bg-[#EDF3EC] text-[#346538]",
+      "Com o passar do tempo, evoluimos e expandimos nossas operações. Hoje, somos distribuidores oficiais de diversas marcas renomadas, oferecendo uma ampla seleção de relógios originais com preços diretos de fábrica. Nosso compromisso é entregar produtos de alta qualidade, atendendo tanto lojistas quanto sacoleiros e feirantes. Sempre com excelência e com as melhores condições do mercado.",
+    imageSrc: "/image-quem-somos-hoje.avif",
+    imageAlt: "Equipe separando pedidos e relógios para distribuição",
   },
 ];
 
@@ -19,37 +23,56 @@ export default function AboutSection() {
   return (
     <section
       aria-labelledby="about-heading"
-      className="rounded-xl border border-[#EAEAEA] bg-[#FBFBFA] px-6 py-12 sm:px-8 lg:px-10"
+      className="p-6 sm:p-8 lg:p-10"
     >
       <div className="max-w-3xl">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-500">
-          About
-        </p>
         <h2
           id="about-heading"
-          className="mt-3 font-serif text-3xl tracking-tight text-[#111111] sm:text-4xl"
+          data-reveal
+          className="font-serif text-3xl font-bold leading-tight text-stone-900 sm:text-4xl"
         >
-          Historia, consistencia e confianca para quem vive de relogios.
+          História, consistência e confiança para quem vive de relógios.
         </h2>
       </div>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-[1fr_1.15fr]">
-        {aboutBlocks.map((block) => (
+      <div className="mt-10 space-y-6">
+        {aboutBlocks.map((block, index) => (
           <article
             key={block.label}
-            className="flex h-full flex-col rounded-xl border border-[#EAEAEA] bg-white p-7"
+            data-reveal
+            data-reveal-delay={index * 100}
+            className="grid items-stretch gap-6 rounded-xl border border-[#EAEAEA] bg-white p-5 md:grid-cols-2 md:p-7"
           >
-            <span
-              className={`inline-flex w-fit rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${block.accentClass}`}
+            <div
+              className={`relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-[#EAEAEA] bg-[#F9F9F8] ${
+                index % 2 === 0 ? "md:order-1" : "md:order-2"
+              }`}
             >
-              {block.label}
-            </span>
-            <h3 className="mt-5 text-xl font-semibold leading-snug text-[#111111]">
-              {block.title}
-            </h3>
-            <p className="mt-4 text-sm leading-relaxed text-[#787774]">
-              {block.description}
-            </p>
+              <Image
+                src={block.imageSrc}
+                alt={block.imageAlt}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+            <div
+              className={`flex flex-col justify-center ${
+                index % 2 === 0 ? "md:order-2" : "md:order-1"
+              }`}
+            >
+              <span
+                className="inline-flex w-fit rounded-full bg-[#F7F6F3] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#787774]"
+              >
+                {block.label}
+              </span>
+              <h3 className="mt-5 text-xl font-semibold leading-snug text-[#111111]">
+                {block.title}
+              </h3>
+              <p className="mt-4 text-sm leading-relaxed text-[#787774]">
+                {block.description}
+              </p>
+            </div>
           </article>
         ))}
       </div>

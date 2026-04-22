@@ -28,11 +28,11 @@ async function FeaturedProductsContent() {
 export default function HomeFeaturedSection() {
   return (
     <section className="space-y-8" aria-labelledby="featured-heading">
-      <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">
+      <div data-reveal>
+        <p data-reveal data-reveal-delay={40} className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">
           Seleção especial
         </p>
-        <div className="flex items-end justify-between gap-4">
+        <div data-reveal data-reveal-delay={90} className="flex items-end justify-between gap-4">
           <h2
             id="featured-heading"
             className="font-serif text-3xl font-bold text-stone-900 sm:text-4xl"
@@ -58,9 +58,11 @@ export default function HomeFeaturedSection() {
         </div>
       </div>
 
-      <Suspense fallback={<ProductGridSkeleton count={3} />}>
+      <div data-reveal data-reveal-delay={160}>
+        <Suspense fallback={<ProductGridSkeleton count={3} />}>
         <FeaturedProductsContent />
-      </Suspense>
+        </Suspense>
+      </div>
     </section>
   );
 }
