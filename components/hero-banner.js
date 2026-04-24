@@ -5,7 +5,7 @@ const whatsappHref = `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ??
 
 export default function HeroBanner() {
   return (
-    <section className="flex min-h-dvh w-full flex-col">
+    <section id="hero" className="flex min-h-dvh w-full flex-col">
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-4 py-14 pt-24 sm:px-6 sm:py-16 sm:pt-28 lg:px-8 lg:py-20 lg:pt-32">
       <div className="flex flex-col gap-16 lg:flex-row lg:items-center lg:gap-0">
 
