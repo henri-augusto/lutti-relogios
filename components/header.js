@@ -52,7 +52,7 @@ export default function Header() {
           className={`flex items-center justify-center gap-1 border transition-all duration-300 ${
             isAfterHero
               ? "rounded-md border-transparent bg-transparent px-0 py-0"
-              : "rounded-xl border-[#EAEAEA] bg-[#F7F6F3] px-1.5 py-1"
+              : "rounded-full border-[#EAEAEA] bg-[#F7F6F3] px-2 py-2"
           }`}
           aria-label="Navegação principal"
         >
