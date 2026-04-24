@@ -1,6 +1,7 @@
 /node_modules 
 .env.local 
 .agents/
+.cursor/
 
 # Environment and secrets
 .env
