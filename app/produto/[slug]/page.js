@@ -90,6 +90,7 @@ export default async function ProdutoPage({ params }) {
               nomeProduto={produto.nome}
               precoCentavos={produto.preco}
               estoque={produto.estoque}
+              imagemUrl={produto.imagem_url}
             />
           </div>
 

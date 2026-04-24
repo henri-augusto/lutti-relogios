@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { normalizeCheckoutQuantity } from "@/lib/checkout-quantity";
+import { useCart } from "@/components/cart-provider";
+import { animateFlyToCart } from "@/lib/fly-to-cart";
 
 export default function ComprarButton({
   slug,
@@ -9,15 +11,17 @@ export default function ComprarButton({
   precoCentavos,
   estoque: estoqueProp = 0,
   quantity: quantityProp = 1,
+  imagemUrl = "",
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { addItem, openCart } = useCart();
 
   const estoqueDisponivel = Number.isFinite(Number(estoqueProp))
     ? Math.max(0, Math.floor(Number(estoqueProp)))
     : 0;
 
-  async function handleClick() {
+  async function handleClick(event) {
     setError("");
     setIsLoading(true);
 
@@ -49,25 +53,20 @@ export default function ComprarButton({
 
       const preco = Math.round(precoNum);
 
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slug: slugStr,
-          nomeProduto: nomeStr,
-          preco,
-          quantity,
-          quantidade: quantity,
-        }),
+      addItem({
+        slug: slugStr,
+        nomeProduto: nomeStr,
+        precoCentavos: preco,
+        quantity,
+        estoque: estoqueDisponivel,
+        imagemUrl,
       });
 
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok || !data.url) {
-        throw new Error(data.error || "Nao foi possivel iniciar o pagamento.");
-      }
-
-      window.location.href = data.url;
+      const sourceElement = event?.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+      const targetElement = document.getElementById("cart-button-anchor");
+      await animateFlyToCart({ sourceElement, targetElement, imageUrl: imagemUrl });
+      openCart();
+      setIsLoading(false);
     } catch (err) {
       setError(err?.message || "Algo deu errado. Tente novamente.");
       setIsLoading(false);
@@ -84,7 +83,7 @@ export default function ComprarButton({
         disabled={isLoading || semEstoque}
         className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
-        {isLoading ? "Carregando..." : semEstoque ? "Esgotado" : "Comprar"}
+        {isLoading ? "Adicionando..." : semEstoque ? "Esgotado" : "Comprar"}
       </button>
       {error ? <p className="max-w-xs text-sm text-red-600 sm:max-w-none">{error}</p> : null}
     </div>
