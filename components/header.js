@@ -11,6 +11,7 @@ const links = [
   { href: "/", label: "Início" },
   { href: "/catalogo", label: "Catálogo" },
   { href: "/#about", label: "Sobre" },
+  { href: "/#revendedores-heading", label: "Revenda" },
 ];
 
 export default function Header() {
