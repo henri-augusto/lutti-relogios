@@ -22,6 +22,7 @@ const aboutBlocks = [
 export default function AboutSection() {
   return (
     <section
+      id="about"
       aria-labelledby="about-heading"
       className="p-6 sm:p-8 lg:p-10"
     >

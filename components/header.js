@@ -1,45 +1,120 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const links = [
   { href: "/", label: "Início" },
   { href: "/catalogo", label: "Catálogo" },
-  { href: "/cadastro", label: "Cadastro" },
+  { href: "/#about", label: "Sobre" },
 ];
 
-const whatsappHref = `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5500000000000"}`;
-
 export default function Header() {
+  const [isAfterHero, setIsAfterHero] = useState(false);
+
+  useEffect(() => {
+    const heroSection = document.getElementById("hero");
+    if (!heroSection) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsAfterHero(!entry.isIntersecting);
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(heroSection);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="sticky top-0 z-40 flex justify-center px-4 py-4">
-      <header className="flex w-full max-w-xl items-center justify-between rounded-full border border-stone-200/70 bg-white/80 pl-5 pr-2 py-2 shadow-[0_2px_20px_rgba(0,0,0,0.06)] backdrop-blur-xl">
+    <div
+      className={`sticky top-0 z-40 w-full border-b transition-colors duration-300 ${
+        isAfterHero ? "border-[#EAEAEA] bg-white" : "border-transparent bg-transparent"
+      }`}
+    >
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        <div className="shrink-0" aria-label="Luti Relógios">
+          <Image
+            src="/image-nossa-historia.jpeg"
+            alt="Luti Relógios"
+            width={54}
+            height={54}
+            className="h-11 w-11 rounded-md border border-[#EAEAEA] object-cover"
+          />
+        </div>
 
-        <Link
-          href="/"
-          className="font-serif text-[0.9375rem] font-bold tracking-tight text-stone-900 transition-opacity hover:opacity-70"
+        <nav
+          className={`flex items-center justify-center gap-1 border transition-all duration-300 ${
+            isAfterHero
+              ? "rounded-md border-transparent bg-transparent px-0 py-0"
+              : "rounded-xl border-[#EAEAEA] bg-[#F7F6F3] px-1.5 py-1"
+          }`}
+          aria-label="Navegação principal"
         >
-          Luti
-        </Link>
-
-        <nav className="flex items-center gap-0.5" aria-label="Navegação principal">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-full px-4 py-1.5 text-sm font-medium text-stone-500 transition-all duration-300 hover:bg-stone-100 hover:text-stone-900"
+              className={`text-sm font-medium transition-all duration-300 ${
+                isAfterHero
+                  ? "rounded-md px-3 py-2 text-[#2F3437] hover:bg-[#F7F6F3]"
+                  : "rounded-full px-4 py-1.5 text-stone-500 hover:bg-stone-100 hover:text-stone-900"
+              }`}
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <a
-          href={whatsappHref}
-          target="_blank"
-          rel="noreferrer"
-          className="rounded-full bg-stone-900 px-5 py-2 text-xs font-semibold text-white transition-all duration-300 hover:bg-stone-700 active:scale-95"
-        >
-          WhatsApp
-        </a>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            aria-label="Login"
+            className="flex h-9 w-9 items-center justify-center rounded-md border border-[#EAEAEA] text-[#2F3437] transition-colors hover:bg-[#F7F6F3]"
+          >
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 7a3 3 0 11-6 0 3 3 0 016 0zm-9 11a6 6 0 0112 0"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            aria-label="Carrinho"
+            className="flex h-9 w-9 items-center justify-center rounded-md bg-[#111111] text-white transition-colors hover:bg-[#333333]"
+          >
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 4h2l2.2 9.2a1 1 0 00.97.8h8.58a1 1 0 00.97-.76L20 7H7"
+              />
+              <circle cx="10" cy="19" r="1.4" fill="currentColor" stroke="none" />
+              <circle cx="17" cy="19" r="1.4" fill="currentColor" stroke="none" />
+            </svg>
+          </button>
+        </div>
       </header>
     </div>
   );
