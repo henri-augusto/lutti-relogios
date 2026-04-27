@@ -4,6 +4,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import WhatsAppFloat from "@/components/whatsapp-float";
 import AuthSessionProvider from "@/components/session-provider";
+import { FavoritesProvider } from "@/components/favorites-context";
 import { CartProvider } from "@/components/cart-provider";
 import CartDrawer from "@/components/cart-drawer";
 
@@ -33,14 +34,16 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full bg-white text-stone-900">
         <AuthSessionProvider>
-          <CartProvider>
-            <div aria-hidden="true" className="grain-overlay" />
-            <Header />
-            <main>{children}</main>
-            <Footer />
-            <WhatsAppFloat />
-            <CartDrawer />
-          </CartProvider>
+          <FavoritesProvider>
+            <CartProvider>
+              <div aria-hidden="true" className="grain-overlay" />
+              <Header />
+              <main>{children}</main>
+              <Footer />
+              <WhatsAppFloat />
+              <CartDrawer />
+            </CartProvider>
+          </FavoritesProvider>
         </AuthSessionProvider>
       </body>
     </html>

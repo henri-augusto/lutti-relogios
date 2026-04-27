@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ComprarButton from "@/components/comprar-button";
+import ProductFavoriteButton from "@/components/product-favorite-button";
 import ProductImageWithFallback from "@/components/product-image-with-fallback";
 import WhatsAppButton from "@/components/whatsapp-button";
 import { getProdutoBySlug, getProdutos } from "@/lib/produtos";
@@ -61,6 +62,11 @@ export default async function ProdutoPage({ params }) {
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <article className="grid gap-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-8 lg:grid-cols-2">
         <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-100">
+          <ProductFavoriteButton
+            product={produto}
+            variant="slate"
+            className="absolute right-3 top-3 z-10"
+          />
           <ProductImageWithFallback
             src={produto.imagem_url}
             alt={produto.nome}
