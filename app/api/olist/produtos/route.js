@@ -1,0 +1,23 @@
+import { NextResponse } from "next/server";
+import { OlistApiError, listOlistProducts } from "@/lib/olist-api";
+
+export async function GET(request) {
+  const url = new URL(request.url);
+  const page = Number(url.searchParams.get("page") || "1");
+  const pageSize = Number(url.searchParams.get("pageSize") || "20");
+  const q = String(url.searchParams.get("q") || "");
+
+  try {
+    const result = await listOlistProducts({ page, pageSize, keyword: q });
+    return NextResponse.json(result);
+  } catch (error) {
+    if (error instanceof OlistApiError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: Number.isFinite(error.status) ? error.status : 400 },
+      );
+    }
+    console.error("Erro ao listar produtos Olist:", error);
+    return NextResponse.json({ error: "Nao foi possivel listar produtos do Olist." }, { status: 500 });
+  }
+}
