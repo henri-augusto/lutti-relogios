@@ -59,6 +59,15 @@ SUPABASE_SERVICE_ROLE_KEY=sua_service_role_key
 # Auth (NextAuth)
 NEXTAUTH_SECRET=gere_um_valor_forte_com_32+_caracteres
 NEXTAUTH_URL=http://localhost:3000
+
+# Tiny/Olist OAuth 2
+OLIST_CLIENT_ID=seu_client_id
+OLIST_CLIENT_SECRET=seu_client_secret
+OLIST_REDIRECT_URI=http://localhost:3000/api/olist/oauth/callback
+# Opcional (padrao ja configurado no codigo)
+# OLIST_TOKEN_URL=https://accounts.tiny.com.br/realms/tiny/protocol/openid-connect/token
+# Token final gerado pela interface
+# OLIST_API_TOKEN=cole_o_access_token_gerado
 ```
 
 ## 3) Criar tabela `produtos` no Supabase
@@ -123,3 +132,55 @@ Fluxo implementado:
 - A rota dinamica valida `slug` e usa `notFound()` para evitar pagina quebrada.
 - Se o Supabase nao estiver configurado, os produtos mock sao usados automaticamente.
 - O checkout Stripe funciona quando `STRIPE_SECRET_KEY` estiver configurada.
+
+## OAuth Tiny/Olist (gerar token)
+
+1. Configure `OLIST_CLIENT_ID`, `OLIST_CLIENT_SECRET` e `OLIST_REDIRECT_URI` no `.env.local`.
+2. Rode o projeto com `npm run dev`.
+3. Acesse [http://localhost:3000/olist/oauth](http://localhost:3000/olist/oauth).
+4. Clique em **Conectar com Tiny/Olist** e conclua a autorizacao.
+5. Copie o `access_token` exibido na interface e cole no `.env.local` como `OLIST_API_TOKEN`.
+6. Reinicie o servidor para garantir leitura das variaveis atualizadas.
+
+## Gestao de produtos Olist (admin)
+
+Nova tela administrativa: [http://localhost:3000/admin/produtos](http://localhost:3000/admin/produtos)
+
+Funcionalidades implementadas:
+- Lista paginada de produtos vindo de `GET /produtos` da Olist;
+- Filtro fixo no backend para trazer somente:
+  - `situacao = "A"`
+  - `descricao` iniciando com `relógio`
+- Busca por palavra-chave na listagem;
+- Clique em um item para abrir modal com detalhes do produto por ID;
+- Checkbox para selecionar produtos de destaque (maximo de 3);
+- Persistencia dos 3 destaques no Supabase.
+
+### SQL da tabela de destaque
+
+Execute no editor SQL do Supabase:
+
+```sql
+create table if not exists public.featured_products (
+  id bigint generated always as identity primary key,
+  olist_product_id text not null unique,
+  descricao text not null,
+  preco integer not null default 0,
+  estoque integer not null default 0,
+  imagem_url text not null default '',
+  slug text not null,
+  position integer not null check (position between 1 and 3),
+  created_at timestamptz not null default now()
+);
+```
+
+### Variaveis usadas para Olist
+
+No `.env.local`:
+
+```env
+OLIST_API_TOKEN=seu_access_token
+OLIST_API_BASE_URL=https://api.tiny.com.br/public-api/v3
+# opcional
+OLIST_PRODUCTS_PATH=/produtos
+```

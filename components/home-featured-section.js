@@ -3,6 +3,7 @@ import ProductGrid from "@/components/product-grid";
 import ProductGridSkeleton from "@/components/product-grid-skeleton";
 import ProductsErrorBanner from "@/components/products-error-banner";
 import { ProductsFetchError, getProdutosDestaque } from "@/lib/produtos";
+import { FeaturedProductsError, getFeaturedProducts } from "@/lib/featured-products";
 import { Suspense } from "react";
 
 async function FeaturedProductsContent() {
@@ -10,10 +11,12 @@ async function FeaturedProductsContent() {
   let fetchError = null;
 
   try {
-    produtosDestaque = await getProdutosDestaque(3);
+    const featuredFromAdmin = await getFeaturedProducts();
+    produtosDestaque =
+      featuredFromAdmin.length > 0 ? featuredFromAdmin.slice(0, 3) : await getProdutosDestaque(3);
   } catch (err) {
     fetchError =
-      err instanceof ProductsFetchError
+      err instanceof ProductsFetchError || err instanceof FeaturedProductsError
         ? err.message
         : "Erro inesperado ao buscar produtos no Supabase.";
   }
