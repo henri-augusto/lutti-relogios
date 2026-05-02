@@ -70,20 +70,12 @@ OLIST_REDIRECT_URI=http://localhost:3000/api/olist/oauth/callback
 # OLIST_API_TOKEN=cole_o_access_token_gerado
 ```
 
-## 3) Criar tabela `produtos` no Supabase
+## 3) Tabela `produtos` no Supabase (Olist / admin)
 
-Use este SQL no editor SQL do Supabase:
+O app usa o schema da Olist (`olist_id`, `precos`, `seo`, etc.), **não** o modelo antigo `nome`/`slug` do README.
 
-```sql
-create table if not exists public.produtos (
-  id uuid primary key default gen_random_uuid(),
-  nome text not null,
-  preco integer not null,
-  imagem_url text not null,
-  descricao text not null,
-  slug text not null unique
-);
-```
+- **Projeto novo:** rode `produtos.sql` no SQL Editor do Supabase.
+- **Já existe `public.produtos` sem todas as colunas:** rode `produtos-migration.sql` no mesmo projeto (corrige erros tipo `column produtos.data_criacao does not exist`).
 
 ## 4) Rodar o projeto
 
