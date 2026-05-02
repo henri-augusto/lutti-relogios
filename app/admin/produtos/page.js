@@ -12,6 +12,22 @@ function formatPrice(priceInCents) {
   }).format((Number(priceInCents) || 0) / 100);
 }
 
+function featuredResponseToMap(items) {
+  const next = {};
+  for (const item of items || []) {
+    const idKey = String(item.id ?? "");
+    if (!idKey) continue;
+    next[idKey] = {
+      id: item.id,
+      descricao: item.descricao ?? item.nome ?? "",
+      preco: item.preco,
+      estoque: item.estoque,
+      imagem_url: item.imagem_url,
+    };
+  }
+  return next;
+}
+
 function ProductDetailsModal({ product, loading, error, onClose }) {
   if (!product && !loading && !error) {
     return null;
@@ -81,15 +97,19 @@ function ProductDetailsModal({ product, loading, error, onClose }) {
 export default function AdminProdutosPage() {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [searchMode, setSearchMode] = useState("descricao");
   const [page, setPage] = useState(1);
   const [items, setItems] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
   const [listError, setListError] = useState("");
   const [hasNext, setHasNext] = useState(false);
   const [totalItems, setTotalItems] = useState(0);
-  const [selectedById, setSelectedById] = useState({});
-  const [savingHighlights, setSavingHighlights] = useState(false);
-  const [saveFeedback, setSaveFeedback] = useState("");
+  const [featuredById, setFeaturedById] = useState({});
+  const [togglingFeaturedKey, setTogglingFeaturedKey] = useState("");
+  const [featuredFeedback, setFeaturedFeedback] = useState("");
+  const [catalogById, setCatalogById] = useState({});
+  const [savingCatalog, setSavingCatalog] = useState(false);
+  const [catalogFeedback, setCatalogFeedback] = useState("");
   const [syncingProducts, setSyncingProducts] = useState(false);
   const [syncFeedback, setSyncFeedback] = useState("");
   const [modalItem, setModalItem] = useState(null);
@@ -105,6 +125,10 @@ export default function AdminProdutosPage() {
   }, [query]);
 
   useEffect(() => {
+    setPage(1);
+  }, [searchMode]);
+
+  useEffect(() => {
     let cancelled = false;
     async function loadFeaturedSelection() {
       try {
@@ -114,23 +138,11 @@ export default function AdminProdutosPage() {
           throw new Error(data?.error || "Falha ao carregar destaques salvos.");
         }
         if (!cancelled) {
-          const next = {};
-          for (const item of data?.items || []) {
-            const idKey = String(item.id ?? "");
-            if (!idKey) continue;
-            next[idKey] = {
-              id: item.id,
-              descricao: item.descricao,
-              preco: item.preco,
-              estoque: item.estoque,
-              imagem_url: item.imagem_url,
-            };
-          }
-          setSelectedById(next);
+          setFeaturedById(featuredResponseToMap(data?.items));
         }
       } catch {
         if (!cancelled) {
-          setSaveFeedback("Nao foi possivel carregar os destaques salvos.");
+          setFeaturedFeedback("Nao foi possivel carregar os destaques salvos.");
         }
       }
     }
@@ -143,6 +155,51 @@ export default function AdminProdutosPage() {
 
   useEffect(() => {
     let cancelled = false;
+    async function loadCatalogSelection() {
+      try {
+        const res = await fetch("/api/admin/produtos/catalog", { cache: "no-store" });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data?.error || "Falha ao carregar selecao do catalogo.");
+        }
+        if (!cancelled) {
+          const next = {};
+          for (const id of data?.ids || []) {
+            const key = String(id ?? "");
+            if (key) next[key] = true;
+          }
+          setCatalogById(next);
+        }
+      } catch {
+        if (!cancelled) {
+          setCatalogFeedback("Nao foi possivel carregar a selecao do catalogo.");
+        }
+      }
+    }
+
+    loadCatalogSelection();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (items.length === 0) {
+      return;
+    }
+    setCatalogById((prev) => {
+      const next = { ...prev };
+      for (const item of items) {
+        const idKey = String(item.id ?? "");
+        if (!idKey) continue;
+        next[idKey] = Boolean(item.in_catalog);
+      }
+      return next;
+    });
+  }, [items]);
+
+  useEffect(() => {
+    let cancelled = false;
     async function loadProducts() {
       setLoadingList(true);
       setListError("");
@@ -151,6 +208,7 @@ export default function AdminProdutosPage() {
         const params = new URLSearchParams({
           page: String(page),
           pageSize: String(PAGE_SIZE),
+          mode: searchMode,
         });
         if (debouncedQuery) {
           params.set("q", debouncedQuery);
@@ -183,72 +241,102 @@ export default function AdminProdutosPage() {
     return () => {
       cancelled = true;
     };
-  }, [page, debouncedQuery]);
+  }, [page, debouncedQuery, searchMode]);
 
-  const selectedItems = useMemo(() => Object.values(selectedById), [selectedById]);
-  const selectedCount = selectedItems.length;
+  const featuredItems = useMemo(() => Object.values(featuredById), [featuredById]);
+  const featuredCount = featuredItems.length;
+  const catalogCount = useMemo(
+    () => Object.entries(catalogById).filter(([, v]) => v === true).length,
+    [catalogById],
+  );
 
-  function toggleSelection(item) {
+  function isInCatalog(idKey) {
+    return catalogById[idKey] === true;
+  }
+
+  function toggleCatalogRow(item) {
+    const idKey = String(item.id ?? "");
+    if (!idKey) return;
+    setCatalogFeedback("");
+    setCatalogById((prev) => ({
+      ...prev,
+      [idKey]: !isInCatalog(idKey),
+    }));
+  }
+
+  async function handleSaveCatalog() {
+    setCatalogFeedback("");
+    setSavingCatalog(true);
+    try {
+      const ids = Object.entries(catalogById)
+        .filter(([, v]) => v === true)
+        .map(([k]) => k);
+      const res = await fetch("/api/admin/produtos/catalog", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Falha ao salvar catalogo.");
+      }
+      setCatalogFeedback("Catalogo salvo com sucesso.");
+      const next = {};
+      for (const id of data?.ids || []) {
+        const key = String(id ?? "");
+        if (key) next[key] = true;
+      }
+      setCatalogById(next);
+    } catch (error) {
+      setCatalogFeedback(error?.message || "Falha ao salvar catalogo.");
+    } finally {
+      setSavingCatalog(false);
+    }
+  }
+
+  async function handleToggleFeatured(item) {
     const idKey = String(item.id ?? "");
     if (!idKey) return;
 
-    setSaveFeedback("");
-    setSelectedById((prev) => {
-      if (prev[idKey]) {
-        const next = { ...prev };
-        delete next[idKey];
-        return next;
+    setFeaturedFeedback("");
+    const wasFeatured = Boolean(featuredById[idKey]);
+    let nextPayload;
+    if (wasFeatured) {
+      nextPayload = featuredItems.filter((x) => String(x.id) !== idKey);
+    } else {
+      if (featuredItems.length >= MAX_HIGHLIGHTS) {
+        setFeaturedFeedback(`No maximo ${MAX_HIGHLIGHTS} produtos em destaque.`);
+        return;
       }
-
-      if (Object.keys(prev).length >= MAX_HIGHLIGHTS) {
-        setSaveFeedback(`Permitido selecionar apenas ${MAX_HIGHLIGHTS} produtos para destaque.`);
-        return prev;
-      }
-
-      return {
-        ...prev,
-        [idKey]: {
+      nextPayload = [
+        ...featuredItems,
+        {
           id: item.id,
           descricao: item.descricao,
           preco: item.preco,
           estoque: item.estoque,
           imagem_url: item.imagem_url,
         },
-      };
-    });
-  }
+      ];
+    }
 
-  async function handleSaveHighlights() {
-    setSaveFeedback("");
-    setSavingHighlights(true);
+    setTogglingFeaturedKey(idKey);
     try {
       const res = await fetch("/api/featured-products", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: selectedItems }),
+        body: JSON.stringify({ items: nextPayload }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(data?.error || "Falha ao salvar destaques.");
+        throw new Error(data?.error || "Falha ao atualizar destaque.");
       }
-      setSaveFeedback("Destaques salvos com sucesso.");
-      const next = {};
-      for (const item of data?.items || []) {
-        const idKey = String(item.id ?? "");
-        if (!idKey) continue;
-        next[idKey] = {
-          id: item.id,
-          descricao: item.descricao,
-          preco: item.preco,
-          estoque: item.estoque,
-          imagem_url: item.imagem_url,
-        };
-      }
-      setSelectedById(next);
+      setFeaturedFeedback(wasFeatured ? "Produto removido do destaque." : "Produto adicionado ao destaque.");
+      setFeaturedById(featuredResponseToMap(data?.items));
     } catch (error) {
-      setSaveFeedback(error?.message || "Falha ao salvar destaques.");
+      setFeaturedFeedback(error?.message || "Falha ao atualizar destaque.");
     } finally {
-      setSavingHighlights(false);
+      setTogglingFeaturedKey("");
     }
   }
 
@@ -294,6 +382,11 @@ export default function AdminProdutosPage() {
     }
   }
 
+  const searchPlaceholder =
+    searchMode === "sku"
+      ? "Digite o codigo SKU..."
+      : "Ex.: technos, prata, feminino...";
+
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-6">
@@ -304,31 +397,62 @@ export default function AdminProdutosPage() {
       </div>
 
       <section className="mb-6 rounded-xl border border-stone-200 bg-white p-4 sm:p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <label className="w-full sm:max-w-md">
-            <span className="mb-1 block text-sm font-medium text-stone-700">Busca por palavra-chave</span>
-            <input
-              type="text"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Ex.: technos, prata, feminino..."
-              className="w-full rounded-md border border-stone-300 px-3 py-2 text-sm outline-none focus:border-stone-500"
-            />
-          </label>
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div className="w-full flex-1 lg:max-w-xl">
+            <span className="mb-1 block text-sm font-medium text-stone-700">Busca</span>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+              <input
+                type="text"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={searchPlaceholder}
+                className="w-full flex-1 rounded-md border border-stone-300 px-3 py-2 text-sm outline-none focus:border-stone-500"
+              />
+              <div className="flex shrink-0 gap-1 rounded-md border border-stone-300 p-0.5">
+                <button
+                  type="button"
+                  onClick={() => setSearchMode("descricao")}
+                  className={`rounded px-3 py-1.5 text-xs font-medium sm:text-sm ${
+                    searchMode === "descricao"
+                      ? "bg-stone-900 text-white"
+                      : "text-stone-600 hover:bg-stone-50"
+                  }`}
+                >
+                  Palavra-chave
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSearchMode("sku")}
+                  className={`rounded px-3 py-1.5 text-xs font-medium sm:text-sm ${
+                    searchMode === "sku"
+                      ? "bg-stone-900 text-white"
+                      : "text-stone-600 hover:bg-stone-50"
+                  }`}
+                >
+                  SKU
+                </button>
+              </div>
+            </div>
+          </div>
 
-          <div className="text-sm text-stone-700">
-            Selecionados: <strong>{selectedCount}</strong> / {MAX_HIGHLIGHTS}
+          <div className="flex flex-col gap-1 text-sm text-stone-700 sm:items-end">
+            <p>
+              Em destaque: <strong>{featuredCount}</strong> / {MAX_HIGHLIGHTS}
+            </p>
+            <p>
+              No catalogo (marcados): <strong>{catalogCount}</strong>
+            </p>
           </div>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="button"
-            onClick={handleSaveHighlights}
-            disabled={savingHighlights || selectedCount > MAX_HIGHLIGHTS}
+            onClick={handleSaveCatalog}
+            disabled={savingCatalog}
             className="rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {savingHighlights ? "Salvando..." : "Salvar destaque"}
+            {savingCatalog ? "Salvando..." : "Salvar catalogo"}
           </button>
           <button
             type="button"
@@ -338,7 +462,8 @@ export default function AdminProdutosPage() {
           >
             {syncingProducts ? "Sincronizando..." : "Sincronizar Olist"}
           </button>
-          {saveFeedback ? <p className="text-sm text-stone-600">{saveFeedback}</p> : null}
+          {featuredFeedback ? <p className="text-sm text-stone-600">{featuredFeedback}</p> : null}
+          {catalogFeedback ? <p className="text-sm text-stone-600">{catalogFeedback}</p> : null}
           {syncFeedback ? <p className="text-sm text-stone-600">{syncFeedback}</p> : null}
         </div>
       </section>
@@ -350,11 +475,14 @@ export default function AdminProdutosPage() {
         {!loadingList && !listError ? (
           <>
             <div className="overflow-x-auto rounded-lg border border-stone-200">
-              <table className="w-full min-w-[640px] border-collapse text-left text-sm">
+              <table className="w-full min-w-[720px] border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-stone-200 bg-stone-50 text-stone-700">
                     <th scope="col" className="w-12 px-3 py-3 text-center font-medium">
-                      <span className="sr-only">Destaque</span>
+                      Catalogo
+                    </th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3 text-center font-medium">
+                      Destaque
                     </th>
                     <th scope="col" className="px-3 py-3 font-medium">
                       Descricao
@@ -370,19 +498,38 @@ export default function AdminProdutosPage() {
                 <tbody className="divide-y divide-stone-200">
                   {items.map((item) => {
                     const idKey = String(item.id ?? "");
-                    const checked = Boolean(selectedById[idKey]);
+                    const catalogChecked = isInCatalog(idKey);
+                    const isFeatured = Boolean(featuredById[idKey]);
+                    const busyFeatured = togglingFeaturedKey === idKey;
                     return (
-                      <tr key={idKey || item.descricao} className="align-middle text-stone-800">
+                      <tr
+                        key={idKey || item.descricao}
+                        className={`align-middle text-stone-800 ${isFeatured ? "bg-amber-50/60" : ""}`}
+                      >
                         <td className="px-3 py-3 text-center">
                           <label className="inline-flex cursor-pointer justify-center">
-                            <span className="sr-only">Marcar {item.descricao} como destaque</span>
+                            <span className="sr-only">Incluir {item.descricao} no catalogo publico</span>
                             <input
                               type="checkbox"
-                              checked={checked}
-                              onChange={() => toggleSelection(item)}
+                              checked={catalogChecked}
+                              onChange={() => toggleCatalogRow(item)}
                               className="h-4 w-4 rounded border-stone-300 text-stone-900 focus:ring-stone-500"
                             />
                           </label>
+                        </td>
+                        <td className="px-3 py-3 text-center">
+                          <button
+                            type="button"
+                            disabled={busyFeatured}
+                            onClick={() => handleToggleFeatured(item)}
+                            className={`whitespace-nowrap rounded-md border px-2.5 py-1 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm ${
+                              isFeatured
+                                ? "border-amber-600 bg-amber-100 text-amber-950 hover:bg-amber-200"
+                                : "border-stone-300 text-stone-700 hover:bg-stone-50"
+                            }`}
+                          >
+                            {busyFeatured ? "..." : isFeatured ? "Remover destaque" : "Destaque"}
+                          </button>
                         </td>
                         <td className="max-w-md px-3 py-3">
                           <button
@@ -422,9 +569,7 @@ export default function AdminProdutosPage() {
 
               <div className="text-sm text-stone-600">
                 Pagina {page}
-                {Number.isFinite(totalItems)
-                  ? ` · Total: ${totalItems}`
-                  : ""}
+                {Number.isFinite(totalItems) ? ` · Total: ${totalItems}` : ""}
               </div>
 
               <button

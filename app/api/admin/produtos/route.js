@@ -6,9 +6,11 @@ export async function GET(request) {
   const page = Number(url.searchParams.get("page") || "1");
   const pageSize = Number(url.searchParams.get("pageSize") || "20");
   const q = String(url.searchParams.get("q") || "");
+  const modeRaw = String(url.searchParams.get("mode") || url.searchParams.get("searchMode") || "descricao");
+  const searchMode = modeRaw === "sku" ? "sku" : "descricao";
 
   try {
-    const result = await listAdminProductsLocal({ page, pageSize, q });
+    const result = await listAdminProductsLocal({ page, pageSize, q, searchMode });
     return NextResponse.json(result);
   } catch (error) {
     if (error instanceof AdminProductsError) {
