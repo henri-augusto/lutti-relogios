@@ -86,10 +86,12 @@ export default function AdminProdutosPage() {
   const [loadingList, setLoadingList] = useState(false);
   const [listError, setListError] = useState("");
   const [hasNext, setHasNext] = useState(false);
-  const [totalEstimated, setTotalEstimated] = useState(null);
+  const [totalItems, setTotalItems] = useState(0);
   const [selectedById, setSelectedById] = useState({});
   const [savingHighlights, setSavingHighlights] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState("");
+  const [syncingProducts, setSyncingProducts] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState("");
   const [modalItem, setModalItem] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
   const [modalError, setModalError] = useState("");
@@ -153,7 +155,7 @@ export default function AdminProdutosPage() {
         if (debouncedQuery) {
           params.set("q", debouncedQuery);
         }
-        const res = await fetch(`/api/olist/produtos?${params.toString()}`, { cache: "no-store" });
+        const res = await fetch(`/api/admin/produtos?${params.toString()}`, { cache: "no-store" });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
           throw new Error(data?.error || "Erro ao carregar produtos.");
@@ -161,14 +163,14 @@ export default function AdminProdutosPage() {
         if (!cancelled) {
           setItems(Array.isArray(data?.items) ? data.items : []);
           setHasNext(Boolean(data?.hasNext));
-          setTotalEstimated(Number.isFinite(data?.totalEstimated) ? data.totalEstimated : null);
+          setTotalItems(Number.isFinite(data?.total) ? data.total : 0);
         }
       } catch (error) {
         if (!cancelled) {
           setListError(error?.message || "Erro ao carregar produtos.");
           setItems([]);
           setHasNext(false);
-          setTotalEstimated(null);
+          setTotalItems(0);
         }
       } finally {
         if (!cancelled) {
@@ -250,12 +252,34 @@ export default function AdminProdutosPage() {
     }
   }
 
+  async function handleSyncProducts() {
+    setSyncFeedback("");
+    setSyncingProducts(true);
+    try {
+      const res = await fetch("/api/admin/produtos/sync", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Falha ao sincronizar produtos.");
+      }
+      setSyncFeedback(
+        `Sincronizacao concluida: ${data?.processed ?? 0} produtos processados em ${data?.pages ?? 0} paginas.`,
+      );
+      setPage(1);
+      setDebouncedQuery("");
+      setQuery("");
+    } catch (error) {
+      setSyncFeedback(error?.message || "Falha ao sincronizar produtos.");
+    } finally {
+      setSyncingProducts(false);
+    }
+  }
+
   async function openModalById(productId) {
     setModalLoading(true);
     setModalError("");
     setModalItem(null);
     try {
-      const res = await fetch(`/api/olist/produtos/${encodeURIComponent(productId)}`, {
+      const res = await fetch(`/api/admin/produtos/${encodeURIComponent(productId)}`, {
         cache: "no-store",
       });
       const data = await res.json().catch(() => ({}));
@@ -275,7 +299,7 @@ export default function AdminProdutosPage() {
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-stone-900">Admin - Produtos Olist</h1>
         <p className="mt-2 text-sm text-stone-600">
-          Lista de produtos ativos com descricao iniciando em relogio.
+          Produtos ativos (situacao A) salvos no Supabase apos sincronizar com o Olist.
         </p>
       </div>
 
@@ -306,7 +330,16 @@ export default function AdminProdutosPage() {
           >
             {savingHighlights ? "Salvando..." : "Salvar destaque"}
           </button>
+          <button
+            type="button"
+            onClick={handleSyncProducts}
+            disabled={syncingProducts}
+            className="rounded-md border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {syncingProducts ? "Sincronizando..." : "Sincronizar Olist"}
+          </button>
           {saveFeedback ? <p className="text-sm text-stone-600">{saveFeedback}</p> : null}
+          {syncFeedback ? <p className="text-sm text-stone-600">{syncFeedback}</p> : null}
         </div>
       </section>
 
@@ -389,8 +422,8 @@ export default function AdminProdutosPage() {
 
               <div className="text-sm text-stone-600">
                 Pagina {page}
-                {Number.isFinite(totalEstimated) && totalEstimated != null
-                  ? ` · Total estimado: ${totalEstimated}`
+                {Number.isFinite(totalItems)
+                  ? ` · Total: ${totalItems}`
                   : ""}
               </div>
 
