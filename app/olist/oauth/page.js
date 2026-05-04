@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+
+const OAUTH_HASH_CACHE_KEY = "olist_oauth_hash_payload";
 
 function parseHashToken() {
   if (typeof window === "undefined") {
@@ -32,12 +33,49 @@ export default function OlistOAuthPage() {
 
   const queryError = searchParams.get("error");
 
-  useEffect(() => {
-    const parsed = parseHashToken();
-    if (parsed.accessToken) {
-      setTokenData(parsed);
-      window.history.replaceState(null, "", "/olist/oauth");
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
     }
+
+    const fromHash = parseHashToken();
+    if (fromHash.accessToken) {
+      setTokenData(fromHash);
+      try {
+        sessionStorage.setItem(OAUTH_HASH_CACHE_KEY, JSON.stringify(fromHash));
+      } catch {
+        /* ignore quota / private mode */
+      }
+      window.history.replaceState(null, "", "/olist/oauth");
+      queueMicrotask(() => {
+        try {
+          sessionStorage.removeItem(OAUTH_HASH_CACHE_KEY);
+        } catch {
+          /* ignore */
+        }
+      });
+      return undefined;
+    }
+
+    try {
+      const raw = sessionStorage.getItem(OAUTH_HASH_CACHE_KEY);
+      if (!raw) {
+        return undefined;
+      }
+      const cached = JSON.parse(raw);
+      if (cached?.accessToken) {
+        setTokenData({
+          accessToken: String(cached.accessToken),
+          tokenType: String(cached.tokenType || ""),
+          expiresIn: String(cached.expiresIn || ""),
+          scope: String(cached.scope || ""),
+        });
+      }
+      sessionStorage.removeItem(OAUTH_HASH_CACHE_KEY);
+    } catch {
+      sessionStorage.removeItem(OAUTH_HASH_CACHE_KEY);
+    }
+    return undefined;
   }, []);
 
   useEffect(() => {
@@ -89,12 +127,12 @@ export default function OlistOAuthPage() {
         </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Link
+          <a
             href="/api/olist/oauth/start"
             className="inline-flex items-center justify-center rounded-md bg-[#111111] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#333333]"
           >
             Conectar com Tiny/Olist
-          </Link>
+          </a>
         </div>
 
         {queryError ? (
