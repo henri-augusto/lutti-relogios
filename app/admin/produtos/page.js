@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 50;
 const MAX_HIGHLIGHTS = 3;
 
 function formatPrice(priceInCents) {
@@ -10,6 +10,23 @@ function formatPrice(priceInCents) {
     style: "currency",
     currency: "BRL",
   }).format((Number(priceInCents) || 0) / 100);
+}
+
+/** Texto visível aproximado (para decidir se mostra "—"). */
+function plainTextFromHtml(html) {
+  return String(html ?? "")
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&#160;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripDangerousHtmlTags(html) {
+  return String(html ?? "")
+    .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+    .replace(/<iframe\b[\s\S]*?<\/iframe>/gi, "");
 }
 
 function featuredResponseToMap(items) {
@@ -37,7 +54,7 @@ function ProductDetailsModal({ product, loading, error, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="max-h-[85vh] w-full max-w-2xl overflow-auto rounded-xl bg-white p-5 shadow-xl sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-stone-900">Detalhes do produto</h2>
+          <h2 className="text-lg font-semibold text-stone-900">Produto (Olist)</h2>
           <button
             type="button"
             onClick={onClose}
@@ -47,46 +64,63 @@ function ProductDetailsModal({ product, loading, error, onClose }) {
           </button>
         </div>
 
-        {loading ? <p className="text-sm text-stone-600">Carregando...</p> : null}
+        {loading ? <p className="text-sm text-stone-600">Carregando da Olist...</p> : null}
         {error ? <p className="text-sm text-red-700">{error}</p> : null}
 
         {product ? (
           <div className="space-y-4 text-sm text-stone-700">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <p>
-                <span className="font-semibold text-stone-900">ID:</span> {product.id}
-              </p>
-              {product.sku ? (
-                <p>
-                  <span className="font-semibold text-stone-900">SKU:</span> {product.sku}
+            <div>
+              <p className="mb-2 font-semibold text-stone-900">Foto</p>
+              {product.foto ? (
+                <img
+                  src={product.foto}
+                  alt={product.sku ? `Foto do produto SKU ${product.sku}` : `Foto do produto ${product.id}`}
+                  className="max-h-64 w-full rounded-lg border border-stone-200 bg-stone-50 object-contain"
+                />
+              ) : (
+                <p className="rounded-lg border border-dashed border-stone-200 bg-stone-50 px-3 py-8 text-center text-stone-500">
+                  Sem foto
                 </p>
-              ) : null}
-              <p>
-                <span className="font-semibold text-stone-900">Situacao:</span> {product.situacao}
-              </p>
-              <p>
-                <span className="font-semibold text-stone-900">Preco:</span> {formatPrice(product.preco)}
-              </p>
-              <p>
-                <span className="font-semibold text-stone-900">Estoque:</span> {product.estoque}
-              </p>
+              )}
+            </div>
+
+            <dl className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <dt className="font-semibold text-stone-900">ID</dt>
+                <dd className="mt-0.5 tabular-nums">{product.id}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-stone-900">SKU</dt>
+                <dd className="mt-0.5 font-mono text-xs">{product.sku || "—"}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-stone-900">Preço</dt>
+                <dd className="mt-0.5 tabular-nums">{formatPrice(product.preco)}</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-stone-900">Estoque</dt>
+                <dd className="mt-0.5 tabular-nums">{product.estoque ?? "—"}</dd>
+              </div>
+            </dl>
+
+            <div>
+              <p className="font-semibold text-stone-900">Descrição complementar</p>
+              {plainTextFromHtml(product.descricaoComplementar) ? (
+                <div
+                  className="mt-2 max-h-[min(50vh,24rem)] overflow-y-auto break-words rounded-lg border border-stone-200 bg-stone-50/80 px-3 py-3 text-stone-800 [&_a]:break-all [&_a]:text-stone-900 [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-stone-300 [&_blockquote]:pl-3 [&_blockquote]:italic [&_h1]:mb-2 [&_h1]:text-base [&_h1]:font-semibold [&_h2]:mb-2 [&_h2]:text-sm [&_h2]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:my-0.5 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-2 [&_p]:first:mt-0 [&_p]:last:mb-0 [&_table]:my-2 [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-stone-200 [&_td]:p-2 [&_th]:border [&_th]:border-stone-200 [&_th]:p-2 [&_th]:text-left [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-6 [&_strong]:font-semibold"
+                  dangerouslySetInnerHTML={{
+                    __html: stripDangerousHtmlTags(product.descricaoComplementar),
+                  }}
+                />
+              ) : (
+                <p className="mt-1 text-stone-500">—</p>
+              )}
             </div>
 
             <div>
-              <p className="font-semibold text-stone-900">Descricao</p>
-              <p className="mt-1">{product.descricao}</p>
+              <p className="font-semibold text-stone-900">Fornecedor</p>
+              <p className="mt-1">{product.fornecedorNome || "—"}</p>
             </div>
-
-            {product.imagem_url ? (
-              <div>
-                <p className="mb-2 font-semibold text-stone-900">Imagem</p>
-                <img
-                  src={product.imagem_url}
-                  alt={product.descricao}
-                  className="max-h-64 w-full rounded-lg border border-stone-200 object-contain"
-                />
-              </div>
-            ) : null}
           </div>
         ) : null}
       </div>
@@ -249,6 +283,10 @@ export default function AdminProdutosPage() {
     () => Object.entries(catalogById).filter(([, v]) => v === true).length,
     [catalogById],
   );
+  const totalPages = useMemo(() => {
+    if (!Number.isFinite(totalItems) || totalItems <= 0) return 0;
+    return Math.ceil(totalItems / PAGE_SIZE);
+  }, [totalItems]);
 
   function isInCatalog(idKey) {
     return catalogById[idKey] === true;
@@ -557,26 +595,40 @@ export default function AdminProdutosPage() {
               <p className="py-4 text-sm text-stone-600">Nenhum produto encontrado nesta página.</p>
             ) : null}
 
-            <div className="mt-5 flex items-center justify-between">
+            <div className="mt-5 flex items-center justify-between gap-3 border-t border-stone-200 pt-4">
               <button
                 type="button"
                 onClick={() => setPage((current) => Math.max(1, current - 1))}
                 disabled={page === 1 || loadingList}
-                className="rounded-md border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="shrink-0 rounded-md border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Anterior
               </button>
 
-              <div className="text-sm text-stone-600">
-                Pagina {page}
-                {Number.isFinite(totalItems) ? ` · Total: ${totalItems}` : ""}
+              <div className="min-w-0 flex-1 text-center text-sm text-stone-600">
+                {totalPages > 0 ? (
+                  <>
+                    Pagina{" "}
+                    <span className="font-medium tabular-nums text-stone-800">{page}</span>
+                    {" de "}
+                    <span className="font-medium tabular-nums text-stone-800">{totalPages}</span>
+                    {Number.isFinite(totalItems) ? (
+                      <>
+                        {" "}
+                        <span className="text-stone-500">·</span> {totalItems} produtos
+                      </>
+                    ) : null}
+                  </>
+                ) : (
+                  <span>Nenhum produto para exibir.</span>
+                )}
               </div>
 
               <button
                 type="button"
                 onClick={() => setPage((current) => current + 1)}
                 disabled={!hasNext || loadingList}
-                className="rounded-md border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="shrink-0 rounded-md border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Proxima
               </button>
