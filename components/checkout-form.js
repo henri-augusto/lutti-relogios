@@ -29,7 +29,7 @@ function formatPrice(priceInCents) {
 }
 
 export default function CheckoutForm() {
-  const { items, subtotalCentavos, clearCart } = useCart();
+  const { items, subtotalCentavos, updateQuantity, removeItem, clearCart } = useCart();
   const { status } = useSession();
   const [personal, setPersonal] = useState(initialPersonal);
   const [address, setAddress] = useState(initialAddress);
@@ -204,7 +204,7 @@ export default function CheckoutForm() {
     >
       <div className="border-b border-[#EAEAEA] pb-5">
         <h2 className="font-serif text-2xl font-semibold tracking-[-0.02em] text-[#111111]">
-          Finalizacao do pedido
+          Finalização do pedido
         </h2>
         {isProfileLoading ? (
           <p className="mt-2 text-xs uppercase tracking-[0.06em] text-[#787774]">Carregando seus dados...</p>
@@ -253,7 +253,7 @@ export default function CheckoutForm() {
                     }}
                     className="rounded-md border border-[#EAEAEA] bg-white px-5 py-3 text-sm font-medium text-[#2F3437] transition hover:border-[#D4D4D2] hover:bg-[#F9F9F8]"
                   >
-                    Nao tenho conta
+                    Não tenho conta
                   </button>
                 </div>
               </div>
@@ -288,7 +288,7 @@ export default function CheckoutForm() {
                     onClick={() => setIsGuestCheckout(false)}
                     className="rounded-md border border-[#EAEAEA] bg-white px-5 py-3 text-sm font-medium text-[#2F3437] transition hover:border-[#D4D4D2] hover:bg-[#F9F9F8]"
                   >
-                    Ja tenho conta
+                    Já tenho conta
                   </button>
                 ) : null}
               </div>
@@ -392,7 +392,35 @@ export default function CheckoutForm() {
                       </div>
                       <div className="min-w-0 flex-1 space-y-1.5">
                         <p className="truncate text-sm font-semibold text-[#111111]">{item.nomeProduto}</p>
-                        <p className="text-xs text-[#787774]">Quantidade: {item.quantity}</p>
+                        <div className="flex items-center gap-2 pt-0.5">
+                          <span className="text-xs text-[#787774]">Quantidade:</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (item.quantity <= 1) {
+                                removeItem(item.slug);
+                                return;
+                              }
+                              updateQuantity(item.slug, item.quantity - 1);
+                            }}
+                            className="inline-flex h-6 w-6 items-center justify-center rounded border border-[#EAEAEA] bg-white text-sm font-semibold text-[#2F3437] transition hover:border-[#D4D4D2] hover:bg-[#F9F9F8]"
+                            aria-label={`Diminuir quantidade de ${item.nomeProduto}`}
+                          >
+                            -
+                          </button>
+                          <span className="min-w-5 text-center text-xs font-semibold text-[#111111]">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.slug, item.quantity + 1)}
+                            disabled={item.estoque > 0 && item.quantity >= item.estoque}
+                            className="inline-flex h-6 w-6 items-center justify-center rounded border border-[#EAEAEA] bg-white text-sm font-semibold text-[#2F3437] transition hover:border-[#D4D4D2] hover:bg-[#F9F9F8] disabled:cursor-not-allowed disabled:opacity-60"
+                            aria-label={`Aumentar quantidade de ${item.nomeProduto}`}
+                          >
+                            +
+                          </button>
+                        </div>
                         <p className="text-xs text-[#787774]">Preco unitario: {formatPrice(item.precoCentavos)}</p>
                         <p className="text-xs text-[#787774]">Estoque disponivel: {item.estoque}</p>
                       </div>
