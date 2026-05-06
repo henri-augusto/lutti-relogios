@@ -15,6 +15,22 @@ function formatPrice(priceInCents) {
   }).format(priceInCents / 100);
 }
 
+function plainTextFromHtml(html) {
+  return String(html ?? "")
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&#160;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripDangerousHtmlTags(html) {
+  return String(html ?? "")
+    .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+    .replace(/<iframe\b[\s\S]*?<\/iframe>/gi, "");
+}
+
 function ShoppingBagIcon({ className }) {
   return (
     <svg
@@ -245,7 +261,14 @@ export default function ProductCard({ product }) {
                 {product.nome}
               </h3>
 
-              {product.descricao ? (
+              {plainTextFromHtml(product.descricaoComplementar) ? (
+                <div
+                  className="mt-1 line-clamp-1 text-[11px] leading-relaxed text-stone-500 [&_p]:inline [&_p]:m-0"
+                  dangerouslySetInnerHTML={{
+                    __html: stripDangerousHtmlTags(product.descricaoComplementar),
+                  }}
+                />
+              ) : product.descricao ? (
                 <p className="mt-1 line-clamp-1 text-[11px] leading-relaxed text-stone-500">
                   {product.descricao}
                 </p>
