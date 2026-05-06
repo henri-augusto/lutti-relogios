@@ -1,9 +1,31 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { mapProdutosRowToCatalog, PRODUTOS_TABLE } from "@/lib/produtos";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const FAVORITES_TABLE = "favoritos";
-const PRODUCTS_TABLE = "products";
+
+/** Corpo `/api/favorites`: `product.id` na vitrina é tipicamente `olist_id`; a FK `favoritos.product_id` aponta para `produtos.id`. */
+async function lookupProdutoRowPk(supabase, productId) {
+  const trimmed = productId.trim();
+  const numeric = Number(trimmed);
+  if (Number.isFinite(numeric) && String(numeric) === trimmed) {
+    const { data, error } = await supabase
+      .from(PRODUTOS_TABLE)
+      .select("id")
+      .eq("olist_id", numeric)
+      .maybeSingle();
+    if (error) {
+      throw error;
+    }
+    return data ?? null;
+  }
+  const { data, error } = await supabase.from(PRODUTOS_TABLE).select("id").eq("id", trimmed).maybeSingle();
+  if (error) {
+    throw error;
+  }
+  return data ?? null;
+}
 
 async function getSessionUserId(request) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
@@ -21,37 +43,17 @@ function getSupabaseOrThrow() {
 }
 
 function mapJoinedRow(row) {
-  const p = row?.products;
+  const p = row?.produtos;
   if (!p || typeof p !== "object") {
     return null;
   }
-  const slug = typeof p.slug === "string" ? p.slug.trim() : "";
-  if (!slug) {
+  const catalog = mapProdutosRowToCatalog(p);
+  if (!catalog) {
     return null;
   }
-  const nome = p.name ?? p.nome;
-  if (typeof nome !== "string" || !nome.trim()) {
-    return null;
-  }
-  const precoRaw = p.price ?? p.preco;
-  const preco = Number(precoRaw);
-  if (!Number.isFinite(preco) || preco <= 0) {
-    return null;
-  }
-  const imagem_url = p.image_url ?? p.imagem_url ?? "";
-  const descricao = String(p.description ?? p.descricao ?? "").trim();
-  const stockRaw = p.stock ?? p.estoque;
-  const estoque =
-    stockRaw === undefined || stockRaw === null ? 0 : Math.max(0, Math.floor(Number(stockRaw)));
 
   return {
-    id: String(p.id ?? slug),
-    slug,
-    nome: nome.trim(),
-    preco,
-    imagem_url: typeof imagem_url === "string" ? imagem_url : "",
-    descricao,
-    estoque: Number.isFinite(estoque) ? estoque : 0,
+    ...catalog,
     product_id: String(row.product_id ?? p.id ?? ""),
   };
 }
@@ -66,7 +68,9 @@ export async function GET(request) {
     const supabase = getSupabaseOrThrow();
     const { data, error } = await supabase
       .from(FAVORITES_TABLE)
-      .select("product_id, created_at, products ( id, name, price, image_url, description, slug, stock )")
+      .select(
+        `product_id, created_at, produtos ( id, olist_id, descricao, descricao_complementar, precos, estoque, anexos, seo )`,
+      )
       .eq("usuario_id", userId)
       .order("created_at", { ascending: false });
 
@@ -102,15 +106,7 @@ export async function POST(request) {
     }
 
     const supabase = getSupabaseOrThrow();
-    const { data: product, error: productError } = await supabase
-      .from(PRODUCTS_TABLE)
-      .select("id")
-      .eq("id", productId)
-      .maybeSingle();
-
-    if (productError) {
-      throw productError;
-    }
+    const product = await lookupProdutoRowPk(supabase, productId);
     if (!product?.id) {
       return NextResponse.json({ error: "Produto nao encontrado." }, { status: 404 });
     }

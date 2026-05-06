@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { PRODUTOS_TABLE } from "@/lib/produtos";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const FAVORITES_TABLE = "favoritos";
-const PRODUCTS_TABLE = "products";
 
 async function getSessionUserId(request) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
@@ -46,15 +46,17 @@ export async function POST(request) {
     let merged = 0;
 
     for (const slug of normalized) {
-      const { data: product, error: productError } = await supabase
-        .from(PRODUCTS_TABLE)
+      const { data: bySeoRows, error: productError } = await supabase
+        .from(PRODUTOS_TABLE)
         .select("id")
-        .eq("slug", slug)
-        .maybeSingle();
+        .eq("in_catalog", true)
+        .contains("seo", { slug })
+        .limit(1);
 
       if (productError) {
         throw productError;
       }
+      const product = (bySeoRows ?? [])[0];
       if (!product?.id) {
         continue;
       }

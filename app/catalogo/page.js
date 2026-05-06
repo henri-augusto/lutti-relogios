@@ -6,14 +6,14 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "Catalogo | Luti Relogios",
-  description: "Explore nosso catalogo completo de relogios premium.",
+  title: "Catálogo | Luti Relógios",
+  description: "Explore nosso catálogo completo de relógios premium.",
 };
 
 export const revalidate = 60;
 const ALL_FILTER = "todos";
 const UNKNOWN_BRAND = "Sem marca";
-const UNKNOWN_GENDER = "Nao informado";
+const UNKNOWN_GENDER = "Não informado";
 const BRAND_PRESET = [
   { label: "Technos", aliases: ["technos"] },
   { label: "Condor", aliases: ["condor"] },
@@ -173,13 +173,13 @@ async function CatalogContent({ searchParams }) {
           </div>
 
           <div className="mt-6 border-t border-slate-100 pt-6">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Filtrar por genero</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Filtrar por gênero</h2>
             <div className="mt-3 space-y-2">
               <FilterButton
                 href={buildFilterHref(selectedMarca, selectedGenero, null, ALL_FILTER)}
                 active={selectedGenero === ALL_FILTER}
               >
-                Todos os generos
+                Todos os gêneros
               </FilterButton>
               {generos.map((genero) => (
                 <FilterButton

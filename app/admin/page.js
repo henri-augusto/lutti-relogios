@@ -6,7 +6,7 @@ export default function AdminPage() {
       <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
         <h1 className="text-3xl font-bold text-stone-900">Painel administrativo</h1>
         <p className="mt-2 text-sm text-stone-600">
-          Acesse as acoes principais do painel para conectar a Olist e gerenciar os produtos.
+          Acesse as ações principais do painel para conectar a Olist e gerenciar os produtos.
         </p>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">

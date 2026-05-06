@@ -14,6 +14,10 @@ export const FAVORITES_STORAGE_KEY = "luti:favorites";
 
 const FavoritesContext = createContext(null);
 
+function normalizeSlug(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 function readGuestFromStorage() {
   if (typeof window === "undefined") {
     return [];
@@ -35,9 +39,12 @@ function writeGuestToStorage(list) {
 }
 
 function toGuestEntry(product) {
+  const slug = normalizeSlug(product?.slug);
+  const id = product?.id != null ? String(product.id) : slug;
+
   return {
-    id: product.id,
-    slug: product.slug,
+    id,
+    slug,
     nome: product.nome,
     descricao: product.descricao ?? "",
     imagem_url: product.imagem_url ?? "",
@@ -131,17 +138,19 @@ export function FavoritesProvider({ children }) {
 
   const isFavorite = useCallback(
     (slug) => {
-      if (!slug) {
+      const normalizedSlug = normalizeSlug(slug);
+      if (!normalizedSlug) {
         return false;
       }
-      return items.some((item) => item.slug === slug);
+      return items.some((item) => normalizeSlug(item?.slug) === normalizedSlug);
     },
     [items],
   );
 
   const toggleFavorite = useCallback(
     async (product) => {
-      if (!product?.slug) {
+      const normalizedSlug = normalizeSlug(product?.slug);
+      if (!normalizedSlug) {
         return { added: false, removed: false };
       }
 
@@ -149,13 +158,13 @@ export function FavoritesProvider({ children }) {
         let added = false;
         let removed = false;
         setItems((prev) => {
-          const exists = prev.some((p) => p.slug === product.slug);
+          const exists = prev.some((p) => normalizeSlug(p?.slug) === normalizedSlug);
           let next;
           if (exists) {
-            next = prev.filter((p) => p.slug !== product.slug);
+            next = prev.filter((p) => normalizeSlug(p?.slug) !== normalizedSlug);
             removed = true;
           } else {
-            next = [...prev, toGuestEntry(product)];
+            next = [...prev, toGuestEntry({ ...product, slug: normalizedSlug })];
             added = true;
           }
           writeGuestToStorage(next);
@@ -168,9 +177,12 @@ export function FavoritesProvider({ children }) {
         return { added: false, removed: false };
       }
 
-      const favorited = items.some((p) => p.slug === product.slug);
-      const row = items.find((p) => p.slug === product.slug);
-      const productIdForApi = row?.product_id || String(product.id);
+      const favorited = items.some((p) => normalizeSlug(p?.slug) === normalizedSlug);
+      const row = items.find((p) => normalizeSlug(p?.slug) === normalizedSlug);
+      const productIdForApi = row?.product_id || (product?.id != null ? String(product.id) : "");
+      if (!productIdForApi) {
+        return { added: false, removed: false };
+      }
 
       try {
         if (favorited) {
@@ -205,12 +217,13 @@ export function FavoritesProvider({ children }) {
 
   const removeBySlug = useCallback(
     async (slug, productIdFallback) => {
-      if (!slug) {
+      const normalizedSlug = normalizeSlug(slug);
+      if (!normalizedSlug) {
         return;
       }
       if (status === "unauthenticated") {
         setItems((prev) => {
-          const next = prev.filter((p) => p.slug !== slug);
+          const next = prev.filter((p) => normalizeSlug(p?.slug) !== normalizedSlug);
           writeGuestToStorage(next);
           return next;
         });
@@ -219,7 +232,7 @@ export function FavoritesProvider({ children }) {
       if (status !== "authenticated") {
         return;
       }
-      const row = items.find((p) => p.slug === slug);
+      const row = items.find((p) => normalizeSlug(p?.slug) === normalizedSlug);
       const pid = row?.product_id || productIdFallback;
       if (!pid) {
         return;
