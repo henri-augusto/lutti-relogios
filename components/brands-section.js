@@ -19,6 +19,46 @@ const brands = [
     name: "Champion",
     logo: null,
   },
+  {
+    name: "Citizen",
+    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Citizen_logo.svg",
+  },
+  {
+    name: "Orient",
+    logo: null,
+  },
+  {
+    name: "Tuguir",
+    logo: null,
+  },
+  {
+    name: "Backer",
+    logo: null,
+  },
+  {
+    name: "Philyph London",
+    logo: null,
+  },
+  {
+    name: "X Games",
+    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/X_Games_logo.svg",
+  },
+  {
+    name: "Magnum",
+    logo: null,
+  },
+  {
+    name: "Weide",
+    logo: null,
+  },
+  {
+    name: "X-Watch",
+    logo: null,
+  },
+  {
+    name: "Seiko",
+    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Seiko_logo.svg",
+  },
 ];
 
 const duplicatedBrands = [...brands, ...brands];

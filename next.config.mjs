@@ -22,6 +22,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "anexos.tiny.com.br",
       },
+      {
+        protocol: "https",
+        hostname: "commons.wikimedia.org",
+      },
     ],
   },
 };
