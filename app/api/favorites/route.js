@@ -5,7 +5,7 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const FAVORITES_TABLE = "favoritos";
 
-/** Corpo `/api/favorites`: `product.id` na vitrina é tipicamente `olist_id`; a FK `favoritos.product_id` aponta para `produtos.id`. */
+/** Corpo `/api/favorites`: `product.id` na vitrine é tipicamente `olist_id`; a FK `favoritos.product_id` aponta para `produto.id`. */
 async function lookupProdutoRowPk(supabase, productId) {
   const trimmed = productId.trim();
   const numeric = Number(trimmed);
@@ -13,7 +13,7 @@ async function lookupProdutoRowPk(supabase, productId) {
     const { data, error } = await supabase
       .from(PRODUTOS_TABLE)
       .select("id")
-      .eq("olist_id", numeric)
+      .eq("id", trimmed)
       .maybeSingle();
     if (error) {
       throw error;
@@ -43,7 +43,7 @@ function getSupabaseOrThrow() {
 }
 
 function mapJoinedRow(row) {
-  const p = row?.produtos;
+  const p = row?.[PRODUTOS_TABLE];
   if (!p || typeof p !== "object") {
     return null;
   }
@@ -69,7 +69,7 @@ export async function GET(request) {
     const { data, error } = await supabase
       .from(FAVORITES_TABLE)
       .select(
-        `product_id, created_at, produtos ( id, olist_id, descricao, descricao_complementar, precos, estoque, anexos, seo )`,
+        `product_id, created_at, ${PRODUTOS_TABLE} ( id, nome, descricaoComplementar, preco, estoqueAtual, anexos, seo )`,
       )
       .eq("usuario_id", userId)
       .order("created_at", { ascending: false });
