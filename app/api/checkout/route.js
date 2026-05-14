@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { resolvePublicBaseUrl } from "@/lib/app-url";
-import { normalizeCheckoutQuantity } from "@/lib/checkout-quantity";
+import {
+  MIN_CHECKOUT_TOTAL_ITEMS,
+  MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
+  normalizeCheckoutQuantity,
+} from "@/lib/checkout-quantity";
 import { CheckoutError, createStripeCheckoutSession } from "@/lib/checkout-session";
 
 function normalizePrecoCentavos(raw) {
@@ -64,6 +68,11 @@ export async function POST(request) {
 
     if (!items.length) {
       return NextResponse.json({ error: "Carrinho vazio." }, { status: 400 });
+    }
+
+    const totalUnidades = items.reduce((acc, item) => acc + item.quantidade, 0);
+    if (totalUnidades < MIN_CHECKOUT_TOTAL_ITEMS) {
+      return NextResponse.json({ error: MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE }, { status: 400 });
     }
 
     if (items.some((item) => !item.slug)) {

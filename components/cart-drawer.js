@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { useCart } from "@/components/cart-provider";
+import {
+  MIN_CHECKOUT_TOTAL_ITEMS,
+  MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
+} from "@/lib/checkout-quantity";
 
 function formatPrice(priceInCents) {
   return new Intl.NumberFormat("pt-BR", {
@@ -11,7 +15,7 @@ function formatPrice(priceInCents) {
 }
 
 export default function CartDrawer() {
-  const { items, isCartOpen, closeCart, removeItem, updateQuantity, subtotalCentavos } = useCart();
+  const { items, isCartOpen, closeCart, removeItem, updateQuantity, subtotalCentavos, totalItems } = useCart();
 
   return (
     <>
@@ -80,13 +84,27 @@ export default function CartDrawer() {
           <p className="mb-3 text-sm text-slate-700">
             Subtotal: <span className="font-semibold text-slate-900">{formatPrice(subtotalCentavos)}</span>
           </p>
-          <Link
-            href="/checkout"
-            onClick={closeCart}
-            className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
-          >
-            Finalizar compra
-          </Link>
+          {totalItems >= MIN_CHECKOUT_TOTAL_ITEMS ? (
+            <Link
+              href="/checkout"
+              onClick={closeCart}
+              className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
+            >
+              Finalizar compra
+            </Link>
+          ) : (
+            <>
+              <span
+                aria-disabled="true"
+                className="inline-flex w-full cursor-not-allowed items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white opacity-50"
+              >
+                Finalizar compra
+              </span>
+              {items.length > 0 ? (
+                <p className="mt-2 text-center text-xs text-slate-600">{MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE}</p>
+              ) : null}
+            </>
+          )}
         </footer>
       </aside>
     </>

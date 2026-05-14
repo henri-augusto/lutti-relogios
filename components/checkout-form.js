@@ -3,6 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useCart } from "@/components/cart-provider";
+import {
+  MIN_CHECKOUT_TOTAL_ITEMS,
+  MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
+} from "@/lib/checkout-quantity";
 
 const initialPersonal = {
   fullName: "",
@@ -29,7 +33,7 @@ function formatPrice(priceInCents) {
 }
 
 export default function CheckoutForm() {
-  const { items, subtotalCentavos, updateQuantity, removeItem, clearCart } = useCart();
+  const { items, totalItems, subtotalCentavos, updateQuantity, removeItem, clearCart } = useCart();
   const { status } = useSession();
   const [personal, setPersonal] = useState(initialPersonal);
   const [address, setAddress] = useState(initialAddress);
@@ -163,6 +167,9 @@ export default function CheckoutForm() {
       }
       if (!items.length) {
         throw new Error("Seu carrinho esta vazio.");
+      }
+      if (totalItems < MIN_CHECKOUT_TOTAL_ITEMS) {
+        throw new Error(MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE);
       }
       if (!personal.fullName.trim() || !personal.email.trim()) {
         throw new Error("Preencha os dados pessoais obrigatorios.");
@@ -441,10 +448,20 @@ export default function CheckoutForm() {
             <p className="rounded-md border border-[#F5D1D3] bg-[#FDEBEC] px-4 py-3 text-sm text-[#9F2F2D]">{error}</p>
           ) : null}
 
+          {(status === "authenticated" || isGuestCheckout) && totalItems < MIN_CHECKOUT_TOTAL_ITEMS ? (
+            <p className="rounded-md border border-[#F5D1D3] bg-[#FDEBEC] px-4 py-3 text-sm text-[#9F2F2D]">
+              {MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE}
+            </p>
+          ) : null}
+
           <div className="flex">
             <button
               type="submit"
-              disabled={isLoading || (status !== "authenticated" && !isGuestCheckout)}
+              disabled={
+                isLoading ||
+                (status !== "authenticated" && !isGuestCheckout) ||
+                ((status === "authenticated" || isGuestCheckout) && totalItems < MIN_CHECKOUT_TOTAL_ITEMS)
+              }
               className="w-full rounded-md bg-[#111111] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#333333] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isLoading
