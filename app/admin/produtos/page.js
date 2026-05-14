@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 const PAGE_SIZE = 50;
@@ -72,11 +73,20 @@ function ProductDetailsModal({ product, loading, error, onClose }) {
             <div>
               <p className="mb-2 font-semibold text-stone-900">Foto</p>
               {product.foto ? (
-                <img
-                  src={product.foto}
-                  alt={product.sku ? `Foto do produto SKU ${product.sku}` : `Foto do produto ${product.id}`}
-                  className="max-h-64 w-full rounded-lg border border-stone-200 bg-stone-50 object-contain"
-                />
+                <div className="relative h-64 w-full overflow-hidden rounded-lg border border-stone-200 bg-stone-50">
+                  <Image
+                    src={product.foto}
+                    alt={
+                      product.sku
+                        ? `Foto do produto SKU ${product.sku}`
+                        : `Foto do produto ${product.id}`
+                    }
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 640px) 100vw, 672px"
+                    unoptimized
+                  />
+                </div>
               ) : (
                 <p className="rounded-lg border border-dashed border-stone-200 bg-stone-50 px-3 py-8 text-center text-stone-500">
                   Sem foto
