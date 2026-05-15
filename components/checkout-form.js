@@ -174,8 +174,20 @@ export default function CheckoutForm() {
       if (!personal.fullName.trim() || !personal.email.trim()) {
         throw new Error("Preencha os dados pessoais obrigatorios.");
       }
+      if (!personal.document.trim()) {
+        throw new Error("Informe o CPF.");
+      }
+      if (!personal.phone.trim()) {
+        throw new Error("Informe o telefone com DDD.");
+      }
       if (!address.cep.trim() || !address.street.trim() || !address.number.trim()) {
         throw new Error("Preencha CEP, rua e numero.");
+      }
+      if (!address.neighborhood.trim()) {
+        throw new Error("Preencha o bairro.");
+      }
+      if (!address.city.trim() || !address.state.trim()) {
+        throw new Error("Preencha cidade e UF (2 letras).");
       }
 
       const response = await fetch("/api/checkout", {
@@ -186,7 +198,17 @@ export default function CheckoutForm() {
           customerEmail: personal.email.trim(),
           nomeCliente: personal.fullName.trim(),
           telefone: personal.phone.trim(),
+          document: personal.document.trim(),
           endereco: enderecoCompleto,
+          address: {
+            cep: address.cep.trim(),
+            street: address.street.trim(),
+            number: address.number.trim(),
+            complement: address.complement.trim(),
+            neighborhood: address.neighborhood.trim(),
+            city: address.city.trim(),
+            state: address.state.trim(),
+          },
         }),
       });
 
@@ -284,9 +306,22 @@ export default function CheckoutForm() {
                 />
                 <input
                   type="tel"
-                  placeholder="Telefone"
+                  required
+                  placeholder="Telefone (DDD + numero)"
                   value={personal.phone}
                   onChange={(event) => setPersonal((previous) => ({ ...previous, phone: event.target.value }))}
+                  className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9F8] px-4 py-3 text-sm text-[#111111] placeholder:text-[#787774] outline-none transition focus:border-[#CFCFCD]"
+                />
+                <input
+                  type="text"
+                  required
+                  inputMode="numeric"
+                  autoComplete="off"
+                  placeholder="CPF"
+                  value={personal.document}
+                  onChange={(event) =>
+                    setPersonal((previous) => ({ ...previous, document: event.target.value }))
+                  }
                   className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9F8] px-4 py-3 text-sm text-[#111111] placeholder:text-[#787774] outline-none transition focus:border-[#CFCFCD]"
                 />
                 {status !== "authenticated" && isGuestCheckout ? (
@@ -341,6 +376,7 @@ export default function CheckoutForm() {
               />
               <input
                 type="text"
+                required
                 placeholder="Bairro"
                 value={address.neighborhood}
                 onChange={(event) => setAddress((previous) => ({ ...previous, neighborhood: event.target.value }))}
@@ -348,6 +384,7 @@ export default function CheckoutForm() {
               />
               <input
                 type="text"
+                required
                 placeholder="Cidade"
                 value={address.city}
                 onChange={(event) => setAddress((previous) => ({ ...previous, city: event.target.value }))}
@@ -355,9 +392,16 @@ export default function CheckoutForm() {
               />
               <input
                 type="text"
-                placeholder="Estado"
+                required
+                placeholder="UF (ex.: SP)"
+                maxLength={2}
                 value={address.state}
-                onChange={(event) => setAddress((previous) => ({ ...previous, state: event.target.value }))}
+                onChange={(event) =>
+                  setAddress((previous) => ({
+                    ...previous,
+                    state: event.target.value.toUpperCase().replace(/[^A-Z]/g, ""),
+                  }))
+                }
                 className="rounded-md border border-[#EAEAEA] bg-[#F9F9F8] px-4 py-3 text-sm text-[#111111] placeholder:text-[#787774] outline-none transition focus:border-[#CFCFCD]"
               />
               {isCepLoading ? (

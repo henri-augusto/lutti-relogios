@@ -40,7 +40,7 @@ export default function SucessoPage() {
                 />
               </svg>
             </span>
-            <p className="text-center text-base font-semibold leading-relaxed text-slate-900 sm:text-left sm:text-lg">
+            <p className="text-center text-base font-semibold leading-relaxed tracking-tight text-slate-900 sm:text-left sm:text-lg">
               Fique atento! Entraremos em contato em breve para confirmar os detalhes do seu pedido.
             </p>
           </div>
