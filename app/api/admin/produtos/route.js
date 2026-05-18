@@ -20,6 +20,6 @@ export async function GET(request) {
       );
     }
     console.error("Erro ao listar produtos locais:", error);
-    return NextResponse.json({ error: "Nao foi possivel listar produtos." }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possivel listar produtos." }, { status: 500 });
   }
 }

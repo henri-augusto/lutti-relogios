@@ -171,8 +171,6 @@ export default function AdminProdutosPage() {
   const [catalogById, setCatalogById] = useState({});
   const [savingCatalog, setSavingCatalog] = useState(false);
   const [catalogFeedback, setCatalogFeedback] = useState("");
-  const [syncingProducts, setSyncingProducts] = useState(false);
-  const [syncFeedback, setSyncFeedback] = useState("");
   const [modalItem, setModalItem] = useState(null);
   const [modalProductId, setModalProductId] = useState("");
   const [modalLoading, setModalLoading] = useState(false);
@@ -408,28 +406,6 @@ export default function AdminProdutosPage() {
     }
   }
 
-  async function handleSyncProducts() {
-    setSyncFeedback("");
-    setSyncingProducts(true);
-    try {
-      const res = await fetch("/api/admin/produtos/sync", { method: "POST" });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data?.error || "Falha ao sincronizar produtos.");
-      }
-      setSyncFeedback(
-        `Sincronizacao concluida: ${data?.processed ?? 0} produtos processados em ${data?.pages ?? 0} paginas.`,
-      );
-      setPage(1);
-      setDebouncedQuery("");
-      setQuery("");
-    } catch (error) {
-      setSyncFeedback(error?.message || "Falha ao sincronizar produtos.");
-    } finally {
-      setSyncingProducts(false);
-    }
-  }
-
   function closeProductModal() {
     setModalItem(null);
     setModalProductId("");
@@ -520,7 +496,7 @@ export default function AdminProdutosPage() {
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-stone-900">Admin - Produtos Olist</h1>
         <p className="mt-2 text-sm text-stone-600">
-          Produtos ativos (situacao A) salvos no Supabase apos sincronizar com o Olist.
+          Produtos ativos (situacao A) salvos no Supabase.
         </p>
       </div>
 
@@ -582,17 +558,8 @@ export default function AdminProdutosPage() {
           >
             {savingCatalog ? "Salvando..." : "Salvar catalogo"}
           </button>
-          <button
-            type="button"
-            onClick={handleSyncProducts}
-            disabled={syncingProducts}
-            className="rounded-md border border-stone-300 px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {syncingProducts ? "Sincronizando..." : "Sincronizar Olist"}
-          </button>
           {featuredFeedback ? <p className="text-sm text-stone-600">{featuredFeedback}</p> : null}
           {catalogFeedback ? <p className="text-sm text-stone-600">{catalogFeedback}</p> : null}
-          {syncFeedback ? <p className="text-sm text-stone-600">{syncFeedback}</p> : null}
           {deleteFeedback ? <p className="text-sm text-stone-600">{deleteFeedback}</p> : null}
         </div>
       </section>

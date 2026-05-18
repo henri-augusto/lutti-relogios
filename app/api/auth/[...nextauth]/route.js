@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { resolveAdminFromUser } from "@/lib/admin-auth";
 import { findUserByEmail, verifyPassword } from "@/lib/auth-users";
 
 const handler = NextAuth({
@@ -33,10 +34,13 @@ const handler = NextAuth({
             return null;
           }
 
+          const { isAdmin } = resolveAdminFromUser({ email: user.email });
+
           return {
             id: String(user.id),
             name: user.full_name,
             email: user.email,
+            isAdmin,
           };
         } catch (error) {
           console.error("Erro no login com credenciais:", error);
@@ -49,12 +53,14 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.userId = user.id;
+        token.isAdmin = Boolean(user.isAdmin);
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.userId;
+        session.user.isAdmin = Boolean(token.isAdmin);
       }
       return session;
     },

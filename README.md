@@ -59,6 +59,8 @@ SUPABASE_SERVICE_ROLE_KEY=sua_service_role_key
 # Auth (NextAuth)
 NEXTAUTH_SECRET=gere_um_valor_forte_com_32+_caracteres
 NEXTAUTH_URL=http://localhost:3000
+# E-mails com acesso ao painel /admin (conta ja cadastrada em /auth/register)
+ADMIN_EMAILS=seu@email.com,outro@email.com
 
 # Tiny/Olist OAuth 2
 OLIST_CLIENT_ID=seu_client_id

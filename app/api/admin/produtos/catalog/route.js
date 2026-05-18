@@ -17,7 +17,7 @@ export async function GET() {
       );
     }
     console.error("Erro ao listar ids do catalogo:", error);
-    return NextResponse.json({ error: "Nao foi possivel carregar o catalogo." }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possivel carregar o catalogo." }, { status: 500 });
   }
 }
 
@@ -34,6 +34,6 @@ export async function PUT(request) {
       );
     }
     console.error("Erro ao salvar catalogo:", error);
-    return NextResponse.json({ error: "Nao foi possivel salvar o catalogo." }, { status: 500 });
+    return NextResponse.json({ error: "Não foi possivel salvar o catalogo." }, { status: 500 });
   }
 }
