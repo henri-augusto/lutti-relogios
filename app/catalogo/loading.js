@@ -7,7 +7,10 @@ export default function CatalogoLoading() {
         <div className="h-9 w-64 animate-pulse rounded-lg bg-slate-200" />
         <div className="h-4 max-w-md animate-pulse rounded bg-slate-200" />
       </div>
-      <ProductGridSkeleton count={6} />
+      <ProductGridSkeleton
+        count={8}
+        gridClassName="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+      />
     </div>
   );
 }

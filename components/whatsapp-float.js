@@ -1,4 +1,4 @@
-import { createWhatsAppFloatLink } from "@/lib/whatsapp";
+import { createWhatsAppFloatLink } from "@/lib/domain/whatsapp";
 
 function WhatsAppIcon({ className }) {
   return (

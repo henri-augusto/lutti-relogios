@@ -1,8 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const whatsappHref = `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5500000000000"}`;
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname === "/auth" || pathname === "/auth/register" || pathname === "/auth/forgot-password") {
+    return null;
+  }
+
   return (
     <footer className="mt-12 border-t border-stone-200/60">
       <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 lg:px-8">

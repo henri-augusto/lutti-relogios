@@ -1,5 +1,11 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { useCart } from "@/components/cart-provider";
+import ProductImageWithFallback from "@/components/product-image-with-fallback";
+import { normalizeCheckoutQuantity } from "@/lib/domain/checkout-quantity";
+import { animateFlyToCart } from "@/lib/domain/fly-to-cart";
 
 function formatPrice(priceInCents) {
   return new Intl.NumberFormat("pt-BR", {
@@ -8,47 +14,216 @@ function formatPrice(priceInCents) {
   }).format(priceInCents / 100);
 }
 
-export default function ProductCard({ product }) {
+function ShoppingBagIcon({ className }) {
   return (
-    <article className="group cursor-pointer overflow-hidden rounded-2xl border border-stone-200/60 bg-white shadow-[0_2px_16px_rgba(0,0,0,0.04)] transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-0.5">
-      <Link href={`/produto/${product.slug}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-stone-100">
-          <Image
-            src={product.imagem_url}
-            alt={product.nome}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-          />
-        </div>
-      </Link>
-      <div className="space-y-2 p-5">
-        <h3 className="line-clamp-2 text-base font-semibold text-stone-900">
-          {product.nome}
-        </h3>
-        {product.descricao ? (
-          <p className="line-clamp-2 text-sm leading-relaxed text-stone-500">
-            {product.descricao}
-          </p>
-        ) : null}
-        <p className="font-serif text-xl font-bold text-stone-900">
-          {formatPrice(product.preco)}
-        </p>
-        {(product.estoque ?? 0) < 1 ? (
-          <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
-            Esgotado
-          </p>
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      aria-hidden="true"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+      />
+    </svg>
+  );
+}
+
+function SpinnerIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-80"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      />
+    </svg>
+  );
+}
+
+/**
+ * Monta o item do carrinho a partir do produto do card; lança se inválido ou sem estoque.
+ * @param {object} product
+ */
+function buildCartLineItemFromProduct(product) {
+  const estoqueDisponivel = Number.isFinite(Number(product.estoque))
+    ? Math.max(0, Math.floor(Number(product.estoque)))
+    : 0;
+  const slugStr = typeof product.slug === "string" ? product.slug.trim() : "";
+  const nomeStr = typeof product.nome === "string" ? product.nome.trim() : "";
+  const precoNum =
+    typeof product.preco === "number" ? product.preco : Number(product.preco);
+  let quantity = normalizeCheckoutQuantity(1);
+  if (quantity > estoqueDisponivel) {
+    quantity = normalizeCheckoutQuantity(estoqueDisponivel);
+  }
+
+  if (!slugStr || !nomeStr) {
+    throw new Error("Dados do produto incompletos.");
+  }
+
+  if (estoqueDisponivel < 1) {
+    throw new Error("Produto esgotado.");
+  }
+
+  if (quantity < 1 || quantity > estoqueDisponivel) {
+    throw new Error("Quantidade indisponivel em estoque.");
+  }
+
+  if (!Number.isFinite(precoNum) || precoNum <= 0) {
+    throw new Error("Preco do produto invalido.");
+  }
+
+  const imagemUrl =
+    typeof product.imagem_url === "string" ? product.imagem_url.trim() : "";
+
+  return {
+    slug: slugStr,
+    nomeProduto: nomeStr,
+    precoCentavos: Math.round(precoNum),
+    quantity,
+    estoque: estoqueDisponivel,
+    imagemUrl,
+  };
+}
+
+function ProductCardAddToCartButton({ product, outOfStock }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { addItem, openCart } = useCart();
+
+  const estoqueDisponivel = Number.isFinite(Number(product.estoque))
+    ? Math.max(0, Math.floor(Number(product.estoque)))
+    : 0;
+
+  async function handleClick(event) {
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const payload = buildCartLineItemFromProduct(product);
+      addItem(payload);
+
+      const sourceElement = event?.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+      const targetElement = document.getElementById("cart-button-anchor");
+      await animateFlyToCart({
+        sourceElement,
+        targetElement,
+        imageUrl: payload.imagemUrl,
+      });
+      openCart();
+      setIsLoading(false);
+    } catch (err) {
+      setError(err?.message || "Algo deu errado. Tente novamente.");
+      setIsLoading(false);
+    }
+  }
+
+  const disabled = isLoading || outOfStock || estoqueDisponivel < 1;
+
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-1">
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={disabled}
+        title={
+          outOfStock || estoqueDisponivel < 1
+            ? "Produto esgotado"
+            : isLoading
+              ? "Adicionando ao carrinho"
+              : "Comprar"
+        }
+        aria-label={
+          outOfStock || estoqueDisponivel < 1
+            ? "Produto esgotado"
+            : isLoading
+              ? "Adicionando ao carrinho"
+              : `Comprar ${product.nome ?? "produto"}`
+        }
+        className="inline-flex min-h-9 min-w-0 w-full items-center justify-center gap-1.5 rounded-full bg-stone-900 px-4 text-[11px] font-semibold text-[#FDFBF7] transition-[transform,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-900/25 disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-8 lg:px-3 lg:text-[10px]"
+      >
+        {isLoading ? (
+          <SpinnerIcon className="h-4 w-4 animate-spin" />
         ) : (
-          <p className="text-xs text-stone-400">
-            {product.estoque} disponíveis
-          </p>
+          <>
+            <ShoppingBagIcon className="h-4 w-4" />
+            <span>Comprar</span>
+          </>
         )}
+      </button>
+      {error ? (
+        <p className="text-[10px] leading-tight text-red-700">{error}</p>
+      ) : null}
+    </div>
+  );
+}
+
+export default function ProductCard({ product }) {
+  const outOfStock = (product.estoque ?? 0) < 1;
+
+  const productHref = `/produto/${product.slug}`;
+
+  return (
+    <article className="group h-full rounded-[1.25rem] transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:shadow-[0_22px_44px_-18px_rgba(28,25,23,0.14)]">
+      <div className="flex h-full flex-col rounded-[1.25rem] bg-stone-200/40 p-[5px] ring-1 ring-stone-900/[0.05]">
         <Link
-          href={`/produto/${product.slug}`}
-          className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-stone-700 active:scale-[0.97]"
+          href={productHref}
+          className="block overflow-hidden rounded-[calc(1.25rem-5px)] bg-[#FDFBF7] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] outline-none ring-0 transition-[box-shadow] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus-visible:ring-2 focus-visible:ring-stone-900/20"
         >
-          Ver produto
+            <div className="relative h-48 overflow-hidden bg-stone-100 sm:h-52 lg:h-56">
+              <ProductImageWithFallback
+                src={product.imagem_url}
+                alt={product.nome}
+                tone="stone"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.04]"
+              />
+            </div>
+
+            <div className="border-t border-stone-900/[0.06] px-3 pb-3 pt-2.5">
+              <h3 className="line-clamp-2 text-[0.8125rem] font-semibold leading-snug tracking-tight text-stone-900">
+                {product.nome}
+              </h3>
+
+              {product.descricao ? (
+                <p className="mt-1 line-clamp-1 text-[11px] leading-relaxed text-stone-500">
+                  {product.descricao}
+                </p>
+              ) : null}
+
+              <div className="mt-2 flex items-end justify-between gap-2">
+                <p className="font-serif text-lg font-bold tabular-nums tracking-tight text-stone-900">
+                  {formatPrice(product.preco)}
+                </p>
+                {outOfStock ? (
+                  <span className="shrink-0 text-[9px] font-semibold uppercase tracking-[0.18em] text-amber-800/90">
+                    Esgotado
+                  </span>
+                ) : (
+                  <span className="shrink-0 text-[10px] font-medium tabular-nums text-stone-400">
+                    {product.estoque} em estoque
+                  </span>
+                )}
+              </div>
+            </div>
         </Link>
+
+        <div className="border-t border-stone-900/[0.04] px-3 pb-3 pt-2">
+          <ProductCardAddToCartButton product={product} outOfStock={outOfStock} />
+        </div>
       </div>
     </article>
   );

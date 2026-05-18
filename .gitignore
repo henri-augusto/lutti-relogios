@@ -1,5 +1,8 @@
 /node_modules 
 .env.local 
+.agents/
+.cursor/
+supabase/
 
 # Environment and secrets
 .env
@@ -25,6 +28,8 @@ credentials.*
 *.sqlite
 *.sqlite3
 *.sql
+!supabase/PRODUTO_create_table.sql
+!supabase/migrations/*.sql
 *.dump
 *.bak
 

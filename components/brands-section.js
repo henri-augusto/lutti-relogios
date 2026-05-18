@@ -1,48 +1,131 @@
-const brands = ["Technos", "Condor", "Euro", "Mormaii", "Champion"];
+const brands = [
+  {
+    name: "Technos",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/9/97/Technos_logo.png",
+  },
+  {
+    name: "Condor",
+    logo: null,
+  },
+  {
+    name: "Euro",
+    logo: null,
+  },
+  {
+    name: "Mormaii",
+    logo: null,
+  },
+  {
+    name: "Champion",
+    logo: null,
+  },
+  {
+    name: "Citizen",
+    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Citizen_logo.svg",
+  },
+  {
+    name: "Orient",
+    logo: null,
+  },
+  {
+    name: "Tuguir",
+    logo: null,
+  },
+  {
+    name: "Backer",
+    logo: null,
+  },
+  {
+    name: "Philyph London",
+    logo: null,
+  },
+  {
+    name: "X Games",
+    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/X_Games_logo.svg",
+  },
+  {
+    name: "Magnum",
+    logo: null,
+  },
+  {
+    name: "Weide",
+    logo: null,
+  },
+  {
+    name: "X-Watch",
+    logo: null,
+  },
+  {
+    name: "Seiko",
+    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Seiko_logo.svg",
+  },
+];
+
+const duplicatedBrands = [...brands, ...brands];
 
 export default function BrandsSection() {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-stone-200/70 bg-gradient-to-b from-stone-50 to-white p-6 sm:p-8 lg:p-10">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(217,119,6,0.10),transparent_40%)]" />
+    <section
+      aria-labelledby="brands-heading"
+      className="relative overflow-hidden p-6 sm:p-8 lg:p-10"
+    >
 
-      <div className="relative grid items-start gap-8 md:grid-cols-[1.1fr_1.9fr] md:gap-10">
+      <div className="relative grid items-start gap-8 md:grid-cols-[1fr_2fr] md:gap-10">
         <div className="space-y-4">
-          <p className="inline-flex items-center rounded-full border border-amber-200/60 bg-amber-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-700/85">
-            Marcas selecionadas
-          </p>
-
-          <h2 className="max-w-sm font-serif text-3xl font-semibold leading-tight text-stone-900 sm:text-4xl">
+          <h2
+            id="brands-heading"
+            data-reveal
+            className="max-w-sm font-serif text-3xl font-bold leading-tight text-stone-900 sm:text-4xl"
+          >
             Relógios de marcas que atravessam gerações.
           </h2>
 
-          <p className="max-w-sm text-sm leading-relaxed text-stone-600 sm:text-base">
+          <p
+            data-reveal
+            data-reveal-delay={80}
+            className="max-w-sm text-sm leading-relaxed text-stone-600 sm:text-base"
+          >
             Trabalhamos com fabricantes reconhecidos por design, durabilidade e
             assistência no Brasil.
           </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          {brands.map((brand, index) => (
-            <article
-              key={brand}
-              className={`group rounded-2xl border p-4 transition-all duration-300 hover:-translate-y-px hover:shadow-[0_18px_35px_-25px_rgba(68,64,60,0.45)] sm:p-5 ${
-                index % 2 === 0
-                  ? "border-stone-200 bg-white"
-                  : "border-amber-200/60 bg-amber-50/35"
-              }`}
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-500">
-                  Marca
-                </span>
-                <span className="h-2 w-2 rounded-full bg-amber-500/70 transition-colors duration-300 group-hover:bg-amber-600" />
-              </div>
+        <div
+          data-reveal
+          data-reveal-delay={140}
+          className="relative overflow-hidden rounded-2xl border border-stone-200/80 bg-white/75 p-3"
+        >
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-stone-50 via-stone-50/80 to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-stone-50 via-stone-50/80 to-transparent" />
 
-              <p className="font-serif text-2xl font-semibold tracking-tight text-stone-900">
-                {brand}
-              </p>
-            </article>
-          ))}
+          <div className="brands-marquee flex w-max gap-3 py-1 will-change-transform">
+            {duplicatedBrands.map((brand, index) => (
+              <article
+                key={`${brand.name}-${index}`}
+                className="group flex h-[164px] w-[220px] shrink-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-4 transition-transform duration-300 hover:-translate-y-[1px]"
+              >
+                <div className="flex h-16 items-center justify-center rounded-xl border border-dashed border-stone-300 bg-stone-50 px-3">
+                  {brand.logo ? (
+                    <img
+                      src={brand.logo}
+                      alt={`Logo ${brand.name}`}
+                      className="max-h-10 w-auto object-contain"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="text-xs font-medium uppercase tracking-[0.14em] text-stone-400">
+                      Espaço da logo
+                    </span>
+                  )}
+                </div>
+
+                <p className="text-xl font-semibold tracking-tight text-stone-900">
+                  {brand.name}
+                </p>
+              </article>
+            ))}
+          </div>
+
         </div>
       </div>
     </section>

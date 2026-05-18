@@ -1,0 +1,144 @@
+{
+  "id": 123,
+  "sku": "<string>",
+  "descricao": "<string>",
+  "tipo": "S",
+  "descricaoComplementar": "<string>",
+  "situacao": "A",
+  "produtoPai": {
+    "id": 123,
+    "sku": "<string>",
+    "descricao": "<string>",
+    "tipo": "P"
+  },
+  "unidade": "<string>",
+  "unidadePorCaixa": "<string>",
+  "ncm": "<string>",
+  "gtin": "<string>",
+  "origem": 0,
+  "garantia": "<string>",
+  "observacoes": "<string>",
+  "categoria": {
+    "id": 123,
+    "nome": "<string>",
+    "caminhoCompleto": "<string>"
+  },
+  "marca": {
+    "id": 123,
+    "nome": "<string>"
+  },
+  "dimensoes": {
+    "embalagem": {
+      "id": 123,
+      "tipo": 0,
+      "descricao": "<string>"
+    },
+    "largura": 123,
+    "altura": 123,
+    "comprimento": 123,
+    "diametro": 123,
+    "pesoLiquido": 123,
+    "pesoBruto": 123,
+    "quantidadeVolumes": 123
+  },
+  "precos": {
+    "preco": 123,
+    "precoPromocional": 123,
+    "precoCusto": 123,
+    "precoCustoMedio": 123
+  },
+  "estoque": {
+    "controlar": true,
+    "sobEncomenda": true,
+    "diasPreparacao": 123,
+    "localizacao": "<string>",
+    "minimo": 123,
+    "maximo": 123,
+    "quantidade": 123
+  },
+  "fornecedores": [
+    {
+      "id": 123,
+      "nome": "<string>",
+      "codigoProdutoNoFornecedor": "<string>"
+    }
+  ],
+  "seo": {
+    "titulo": "<string>",
+    "descricao": "<string>",
+    "keywords": [
+      "<string>"
+    ],
+    "linkVideo": "<string>",
+    "slug": "<string>"
+  },
+  "tributacao": {
+    "gtinEmbalagem": "<string>",
+    "valorIPIFixo": 123,
+    "classeIPI": "<string>"
+  },
+  "anexos": [
+    {
+      "url": "<string>",
+      "externo": true
+    }
+  ],
+  "variacoes": [
+    {
+      "id": 123,
+      "descricao": "<string>",
+      "sku": "<string>",
+      "gtin": "<string>",
+      "precos": {
+        "preco": 123,
+        "precoPromocional": 123,
+        "precoCusto": 123,
+        "precoCustoMedio": 123
+      },
+      "estoque": {
+        "controlar": true,
+        "sobEncomenda": true,
+        "diasPreparacao": 123,
+        "localizacao": "<string>",
+        "minimo": 123,
+        "maximo": 123,
+        "quantidade": 123
+      },
+      "grade": [
+        {
+          "chave": "<string>",
+          "valor": "<string>"
+        }
+      ]
+    }
+  ],
+  "kit": [
+    {
+      "produto": {
+        "id": 123,
+        "sku": "<string>",
+        "descricao": "<string>",
+        "tipo": "P"
+      },
+      "quantidade": 123
+    }
+  ],
+  "producao": {
+    "produtos": [
+      {
+        "produto": {
+          "id": 123,
+          "sku": "<string>",
+          "descricao": "<string>",
+          "tipo": "P"
+        },
+        "quantidade": 123
+      }
+    ],
+    "etapas": [
+      "<string>"
+    ]
+  },
+  "codigoListaServicos": "<string>",
+  "tipoVariacao": "N"
+}

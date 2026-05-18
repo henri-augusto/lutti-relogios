@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { persistPedidoPagoFromCheckoutSession } from "@/lib/pedidos-db";
-import { constructStripeWebhookEvent } from "@/lib/stripe-webhook";
+import { persistPedidoPagoFromCheckoutSession } from "@/lib/domain/pedidos-db";
+import { constructStripeWebhookEvent } from "@/lib/integrations/stripe-webhook";
 
 export const dynamic = "force-dynamic";
 

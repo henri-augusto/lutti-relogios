@@ -2,7 +2,8 @@ import Link from "next/link";
 import ProductGrid from "@/components/product-grid";
 import ProductGridSkeleton from "@/components/product-grid-skeleton";
 import ProductsErrorBanner from "@/components/products-error-banner";
-import { ProductsFetchError, getProdutosDestaque } from "@/lib/produtos";
+import { ProductsFetchError, getProdutosDestaque } from "@/lib/domain/produtos";
+import { FeaturedProductsError, getFeaturedProducts } from "@/lib/domain/featured-products";
 import { Suspense } from "react";
 
 async function FeaturedProductsContent() {
@@ -10,10 +11,12 @@ async function FeaturedProductsContent() {
   let fetchError = null;
 
   try {
-    produtosDestaque = await getProdutosDestaque(3);
+    const featuredFromAdmin = await getFeaturedProducts();
+    produtosDestaque =
+      featuredFromAdmin.length > 0 ? featuredFromAdmin.slice(0, 3) : await getProdutosDestaque(3);
   } catch (err) {
     fetchError =
-      err instanceof ProductsFetchError
+      err instanceof ProductsFetchError || err instanceof FeaturedProductsError
         ? err.message
         : "Erro inesperado ao buscar produtos no Supabase.";
   }
@@ -28,20 +31,24 @@ async function FeaturedProductsContent() {
 export default function HomeFeaturedSection() {
   return (
     <section className="space-y-8" aria-labelledby="featured-heading">
-      <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">
+      <div data-reveal>
+        <p data-reveal data-reveal-delay={40} className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">
           Seleção especial
         </p>
-        <div className="flex items-end justify-between gap-4">
+        <div
+          data-reveal
+          data-reveal-delay={90}
+          className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+        >
           <h2
             id="featured-heading"
-            className="font-serif text-3xl font-bold text-stone-900 sm:text-4xl"
+            className="min-w-0 font-serif text-3xl font-bold text-stone-900 sm:text-4xl"
           >
             Em destaque agora
           </h2>
           <Link
             href="/catalogo"
-            className="group inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-stone-300/60 px-4 py-2 text-sm font-medium text-stone-600 transition-all duration-300 hover:border-stone-400 hover:bg-stone-100/60 hover:text-stone-900"
+            className="group inline-flex w-fit shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-stone-300/60 px-4 py-2 text-sm font-medium text-stone-600 transition-all duration-300 hover:border-stone-400 hover:bg-stone-100/60 hover:text-stone-900"
           >
             Ver catálogo
             <svg
@@ -58,9 +65,11 @@ export default function HomeFeaturedSection() {
         </div>
       </div>
 
-      <Suspense fallback={<ProductGridSkeleton count={3} />}>
+      <div data-reveal data-reveal-delay={160}>
+        <Suspense fallback={<ProductGridSkeleton count={3} />}>
         <FeaturedProductsContent />
-      </Suspense>
+        </Suspense>
+      </div>
     </section>
   );
 }
