@@ -103,6 +103,7 @@ create table if not exists public.usuarios (
   full_name text not null,
   phone text default '',
   document text default '',
+  document_type text not null default 'cpf',
   cep text not null,
   street text not null,
   number text not null,
@@ -112,6 +113,13 @@ create table if not exists public.usuarios (
   state text not null,
   created_at timestamptz not null default now()
 );
+```
+
+Se a tabela ja existir, adicione o tipo de documento:
+
+```sql
+alter table public.usuarios
+  add column if not exists document_type text not null default 'cpf';
 ```
 
 Fluxo implementado:

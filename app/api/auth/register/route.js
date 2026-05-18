@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createUser, normalizeCep } from "@/lib/auth-users";
+import { validateDocument } from "@/lib/documents";
 
 function isEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -12,12 +13,14 @@ function isStrongEnoughPassword(value) {
 export async function POST(request) {
   try {
     const body = await request.json();
+    const documentType = body?.documentType === "cnpj" ? "cnpj" : "cpf";
     const payload = {
       email: body?.email ?? "",
       password: body?.password ?? "",
       fullName: body?.fullName ?? "",
       phone: body?.phone ?? "",
       document: body?.document ?? "",
+      documentType,
       cep: body?.cep ?? "",
       street: body?.street ?? "",
       number: body?.number ?? "",
@@ -59,12 +62,17 @@ export async function POST(request) {
       return NextResponse.json({ error: "A senha deve ter no minimo 6 caracteres." }, { status: 400 });
     }
 
+    const documentCheck = validateDocument(payload.document, payload.documentType);
+    if (!documentCheck.ok) {
+      return NextResponse.json({ error: documentCheck.error }, { status: 400 });
+    }
+
     const normalizedCep = normalizeCep(payload.cep);
     if (normalizedCep.length !== 8) {
       return NextResponse.json({ error: "CEP invalido." }, { status: 400 });
     }
 
-    await createUser({ ...payload, cep: normalizedCep });
+    await createUser({ ...payload, document: documentCheck.digits, cep: normalizedCep });
     return NextResponse.json({ ok: true });
   } catch (error) {
     // #region agent log
