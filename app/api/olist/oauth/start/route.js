@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
-import { buildOlistAuthorizeUrl } from "@/lib/olist-oauth";
+import { buildOlistAuthorizeUrl } from "@/lib/integrations/olist-oauth";
 
 const STATE_COOKIE_NAME = "olist_oauth_state";
 const STATE_COOKIE_MAX_AGE_SECONDS = 60 * 10;

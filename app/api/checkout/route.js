@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { resolvePublicBaseUrl } from "@/lib/app-url";
+import { resolvePublicBaseUrl } from "@/lib/api/app-url";
 import {
   MIN_CHECKOUT_TOTAL_ITEMS,
   MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
   normalizeCheckoutQuantity,
-} from "@/lib/checkout-quantity";
-import { CheckoutError, createStripeCheckoutSession } from "@/lib/checkout-session";
+} from "@/lib/domain/checkout-quantity";
+import { CheckoutError, createStripeCheckoutSession } from "@/lib/domain/checkout-session";
 
 function normalizePrecoCentavos(raw) {
   if (raw === undefined || raw === null || raw === "") {

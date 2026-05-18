@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { createWhatsAppCustomLink } from "@/lib/whatsapp";
+import { createWhatsAppCustomLink } from "@/lib/domain/whatsapp";
 
 const baseInputClasses =
   "w-full rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-stone-500 focus:ring-2 focus:ring-stone-200";

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
-import { normalizeCep } from "@/lib/auth-users";
-import { getSupabaseAdmin } from "@/lib/supabase-admin";
+import { jsonSupabaseNotConfigured } from "@/lib/api/api-route";
+import { normalizeCep } from "@/lib/domain/auth-users";
+import { getSessionUserId } from "@/lib/api/session-user";
+import { requireSupabaseAdmin } from "@/lib/integrations/supabase-admin";
+import { isValidCepDigits } from "@/lib/api/validators";
 
 const USER_TABLE = "usuarios";
 const EDITABLE_FIELDS = [
@@ -21,22 +23,6 @@ function trimValue(value) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-async function getSessionUserId(request) {
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  return token?.userId ? String(token.userId) : null;
-}
-
-function getSupabaseOrThrow() {
-  const supabase = getSupabaseAdmin();
-  if (!supabase) {
-    const error = new Error("Supabase admin nao configurado.");
-    error.code = "SUPABASE_NOT_CONFIGURED";
-    throw error;
-  }
-
-  return supabase;
-}
-
 export async function GET(request) {
   try {
     const userId = await getSessionUserId(request);
@@ -44,7 +30,7 @@ export async function GET(request) {
       return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
     }
 
-    const supabase = getSupabaseOrThrow();
+    const supabase = requireSupabaseAdmin();
     const { data, error } = await supabase
       .from(USER_TABLE)
       .select(
@@ -63,11 +49,12 @@ export async function GET(request) {
 
     return NextResponse.json({ profile: data });
   } catch (error) {
-    if (error?.code === "SUPABASE_NOT_CONFIGURED") {
-      return NextResponse.json(
-        { error: "Configuracao do servidor incompleta para perfil." },
-        { status: 503 },
-      );
+    const supabaseResponse = jsonSupabaseNotConfigured(
+      error,
+      "Configuracao do servidor incompleta para perfil.",
+    );
+    if (supabaseResponse) {
+      return supabaseResponse;
     }
 
     console.error("Erro ao buscar perfil:", error);
@@ -103,7 +90,7 @@ export async function PATCH(request) {
       );
     }
 
-    if (payload.cep.length !== 8) {
+    if (!isValidCepDigits(payload.cep)) {
       return NextResponse.json({ error: "CEP invalido." }, { status: 400 });
     }
 
@@ -111,7 +98,7 @@ export async function PATCH(request) {
       Object.entries(payload).filter(([key]) => EDITABLE_FIELDS.includes(key)),
     );
 
-    const supabase = getSupabaseOrThrow();
+    const supabase = requireSupabaseAdmin();
     const { data, error } = await supabase
       .from(USER_TABLE)
       .update(sanitizedPayload)
@@ -127,11 +114,12 @@ export async function PATCH(request) {
 
     return NextResponse.json({ ok: true, profile: data });
   } catch (error) {
-    if (error?.code === "SUPABASE_NOT_CONFIGURED") {
-      return NextResponse.json(
-        { error: "Configuracao do servidor incompleta para editar perfil." },
-        { status: 503 },
-      );
+    const supabaseResponse = jsonSupabaseNotConfigured(
+      error,
+      "Configuracao do servidor incompleta para editar perfil.",
+    );
+    if (supabaseResponse) {
+      return supabaseResponse;
     }
 
     console.error("Erro ao atualizar perfil:", error);

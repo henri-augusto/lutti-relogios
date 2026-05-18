@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { normalizeCheckoutQuantity } from "@/lib/checkout-quantity";
+import { normalizeCheckoutQuantity } from "@/lib/domain/checkout-quantity";
 import { useCart } from "@/components/cart-provider";
-import { animateFlyToCart } from "@/lib/fly-to-cart";
+import { animateFlyToCart } from "@/lib/domain/fly-to-cart";
 
 export default function ComprarButton({
   slug,

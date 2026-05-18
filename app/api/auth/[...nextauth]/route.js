@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { resolveAdminFromUser } from "@/lib/admin-auth";
-import { findUserByEmail, verifyPassword } from "@/lib/auth-users";
+import { resolveAdminFromUser } from "@/lib/domain/admin-auth";
+import { findUserByEmail, verifyPassword } from "@/lib/domain/auth-users";
 
 const handler = NextAuth({
   session: { strategy: "jwt" },

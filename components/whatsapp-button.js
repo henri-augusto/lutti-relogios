@@ -1,4 +1,4 @@
-import { createWhatsAppLink } from "@/lib/whatsapp";
+import { createWhatsAppLink } from "@/lib/domain/whatsapp";
 
 export default function WhatsAppButton({ productName }) {
   const href = createWhatsAppLink(productName);

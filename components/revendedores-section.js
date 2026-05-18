@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { createWhatsAppCustomLink } from "@/lib/whatsapp";
+import { createWhatsAppCustomLink } from "@/lib/domain/whatsapp";
 
 const catalogoRevendaWhatsHref = createWhatsAppCustomLink(
   "Olá! Gostaria de ter acesso ao catálogo de revendedores.",

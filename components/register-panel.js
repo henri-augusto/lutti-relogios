@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { formatDocument, validateDocument } from "@/lib/documents";
+import { formatDocument, validateDocument } from "@/lib/domain/documents";
 
 const inputClasses =
   "w-full rounded-2xl border border-stone-200/80 bg-white/95 px-4 py-2.5 text-sm text-stone-900 outline-none transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus:-translate-y-px focus:border-stone-400 focus:ring-4 focus:ring-stone-200/70";

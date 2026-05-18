@@ -6,7 +6,7 @@ import { useCart } from "@/components/cart-provider";
 import {
   MIN_CHECKOUT_TOTAL_ITEMS,
   MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
-} from "@/lib/checkout-quantity";
+} from "@/lib/domain/checkout-quantity";
 
 const initialPersonal = {
   fullName: "",

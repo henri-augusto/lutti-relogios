@@ -1,14 +1,8 @@
 import { NextResponse } from "next/server";
-import { createUser, normalizeCep } from "@/lib/auth-users";
-import { validateDocument } from "@/lib/documents";
-
-function isEmail(value) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
-
-function isStrongEnoughPassword(value) {
-  return typeof value === "string" && value.length >= 6;
-}
+import { jsonSupabaseNotConfigured } from "@/lib/api/api-route";
+import { createUser, normalizeCep } from "@/lib/domain/auth-users";
+import { validateDocument } from "@/lib/domain/documents";
+import { isEmail, isStrongEnoughPassword, isValidCepDigits } from "@/lib/api/validators";
 
 export async function POST(request) {
   try {
@@ -68,7 +62,7 @@ export async function POST(request) {
     }
 
     const normalizedCep = normalizeCep(payload.cep);
-    if (normalizedCep.length !== 8) {
+    if (!isValidCepDigits(normalizedCep)) {
       return NextResponse.json({ error: "CEP invalido." }, { status: 400 });
     }
 
@@ -98,12 +92,12 @@ export async function POST(request) {
       return NextResponse.json({ error: error.message }, { status: 409 });
     }
 
-    if (error?.code === "SUPABASE_NOT_CONFIGURED") {
-      return NextResponse.json(
-        console.log(error),
-        { error: "Configuracao do servidor incompleta para cadastro." },
-        { status: 503 },
-      );
+    const supabaseResponse = jsonSupabaseNotConfigured(
+      error,
+      "Configuracao do servidor incompleta para cadastro.",
+    );
+    if (supabaseResponse) {
+      return supabaseResponse;
     }
 
     if (error?.code === "42501") {

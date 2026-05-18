@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { exchangeCodeForOlistToken } from "@/lib/olist-oauth";
+import { exchangeCodeForOlistToken } from "@/lib/integrations/olist-oauth";
 
 const STATE_COOKIE_NAME = "olist_oauth_state";
 

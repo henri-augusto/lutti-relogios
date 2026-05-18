@@ -1,7 +1,7 @@
 import CatalogProductGrid from "@/components/catalog-product-grid";
 import ProductGridSkeleton from "@/components/product-grid-skeleton";
 import ProductsErrorBanner from "@/components/products-error-banner";
-import { ProductsFetchError, getProdutos } from "@/lib/produtos";
+import { ProductsFetchError, getProdutos } from "@/lib/domain/produtos";
 import Link from "next/link";
 import { Suspense } from "react";
 

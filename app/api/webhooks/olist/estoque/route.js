@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { logOlistWebhookObservation, LOG_PREFIX } from "@/lib/olist-webhook-log";
+import { logOlistWebhookObservation, LOG_PREFIX } from "@/lib/integrations/olist-webhook-log";
 
 export const dynamic = "force-dynamic";
 

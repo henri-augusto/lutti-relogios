@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { normalizedProductsFromPayload } from "@/lib/olist-api";
+import { normalizedProductsFromPayload } from "@/lib/integrations/olist-api";
 import {
   mapNormalizedOlistToProdutoWebhookRow,
   persistProdutoWebhookRows,
-} from "@/lib/olist-webhook-produto";
-import { getSupabaseAdmin } from "@/lib/supabase-admin";
+} from "@/lib/integrations/olist-webhook-produto";
+import { getSupabaseAdmin } from "@/lib/integrations/supabase-admin";
 
 export const dynamic = "force-dynamic";
 

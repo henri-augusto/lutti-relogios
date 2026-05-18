@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/components/cart-provider";
 import ProductImageWithFallback from "@/components/product-image-with-fallback";
-import { normalizeCheckoutQuantity } from "@/lib/checkout-quantity";
-import { animateFlyToCart } from "@/lib/fly-to-cart";
+import { normalizeCheckoutQuantity } from "@/lib/domain/checkout-quantity";
+import { animateFlyToCart } from "@/lib/domain/fly-to-cart";
 
 function formatPrice(priceInCents) {
   return new Intl.NumberFormat("pt-BR", {

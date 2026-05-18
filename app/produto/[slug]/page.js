@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import ComprarButton from "@/components/comprar-button";
 import ProductImageGallery from "@/components/product-image-gallery";
 import WhatsAppButton from "@/components/whatsapp-button";
-import { getProdutoBySlug, getProdutos } from "@/lib/produtos";
+import { getProdutoBySlug, getProdutos } from "@/lib/domain/produtos";
 
 function formatPrice(priceInCents) {
   return new Intl.NumberFormat("pt-BR", {

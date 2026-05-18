@@ -2,8 +2,8 @@ import Link from "next/link";
 import ProductGrid from "@/components/product-grid";
 import ProductGridSkeleton from "@/components/product-grid-skeleton";
 import ProductsErrorBanner from "@/components/products-error-banner";
-import { ProductsFetchError, getProdutosDestaque } from "@/lib/produtos";
-import { FeaturedProductsError, getFeaturedProducts } from "@/lib/featured-products";
+import { ProductsFetchError, getProdutosDestaque } from "@/lib/domain/produtos";
+import { FeaturedProductsError, getFeaturedProducts } from "@/lib/domain/featured-products";
 import { Suspense } from "react";
 
 async function FeaturedProductsContent() {

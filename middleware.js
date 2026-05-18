@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { isAdminEmail } from "@/lib/admin-auth";
+import { isAdminEmail } from "@/lib/domain/admin-auth";
 
 const ADMIN_LOGIN = "/admin/login";
 

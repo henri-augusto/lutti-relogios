@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createWhatsAppCheckoutSuccessLink } from "@/lib/whatsapp";
+import { createWhatsAppCheckoutSuccessLink } from "@/lib/domain/whatsapp";
 
 export const metadata = {
   title: "Compra realizada | Luti Relogios",
