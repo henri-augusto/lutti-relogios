@@ -181,14 +181,6 @@ export default function Header() {
                   >
                     Compras
                   </Link>
-                  <Link
-                    href="/favoritos"
-                    role="menuitem"
-                    className="block rounded-md px-3 py-2 text-sm text-[#2F3437] transition-colors hover:bg-[#F7F6F3]"
-                    onClick={() => setIsUserMenuOpen(false)}
-                  >
-                    Favoritos
-                  </Link>
                   <button
                     type="button"
                     role="menuitem"

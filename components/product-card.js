@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/components/cart-provider";
-import ProductFavoriteButton from "@/components/product-favorite-button";
 import ProductImageWithFallback from "@/components/product-image-with-fallback";
 import { normalizeCheckoutQuantity } from "@/lib/checkout-quantity";
 import { animateFlyToCart } from "@/lib/fly-to-cart";
@@ -223,14 +222,7 @@ export default function ProductCard({ product }) {
         </Link>
 
         <div className="border-t border-stone-900/[0.04] px-3 pb-3 pt-2">
-          <div className="flex items-stretch gap-2">
-            <ProductFavoriteButton
-              product={product}
-              variant="stone"
-              className="h-auto min-h-9 w-9 rounded-full lg:min-h-8 lg:w-8"
-            />
-            <ProductCardAddToCartButton product={product} outOfStock={outOfStock} />
-          </div>
+          <ProductCardAddToCartButton product={product} outOfStock={outOfStock} />
         </div>
       </div>
     </article>

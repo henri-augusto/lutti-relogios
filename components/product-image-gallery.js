@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import ProductFavoriteButton from "@/components/product-favorite-button";
 import ProductImageWithFallback from "@/components/product-image-with-fallback";
 
 export default function ProductImageGallery({ product, images }) {
@@ -21,11 +20,6 @@ export default function ProductImageGallery({ product, images }) {
   return (
     <div className="space-y-3">
       <div className="relative aspect-square overflow-hidden rounded-2xl bg-slate-100">
-        <ProductFavoriteButton
-          product={product}
-          variant="slate"
-          className="absolute right-3 top-3 z-10"
-        />
         <ProductImageWithFallback
           src={selectedImage}
           alt={product?.nome ?? "Imagem do produto"}
