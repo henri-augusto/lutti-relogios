@@ -35,16 +35,20 @@ export default function HomeFeaturedSection() {
         <p data-reveal data-reveal-delay={40} className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-400">
           Seleção especial
         </p>
-        <div data-reveal data-reveal-delay={90} className="flex items-end justify-between gap-4">
+        <div
+          data-reveal
+          data-reveal-delay={90}
+          className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+        >
           <h2
             id="featured-heading"
-            className="font-serif text-3xl font-bold text-stone-900 sm:text-4xl"
+            className="min-w-0 font-serif text-3xl font-bold text-stone-900 sm:text-4xl"
           >
             Em destaque agora
           </h2>
           <Link
             href="/catalogo"
-            className="group inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-stone-300/60 px-4 py-2 text-sm font-medium text-stone-600 transition-all duration-300 hover:border-stone-400 hover:bg-stone-100/60 hover:text-stone-900"
+            className="group inline-flex w-fit shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-stone-300/60 px-4 py-2 text-sm font-medium text-stone-600 transition-all duration-300 hover:border-stone-400 hover:bg-stone-100/60 hover:text-stone-900"
           >
             Ver catálogo
             <svg

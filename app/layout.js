@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
           <CartProvider>
             <div aria-hidden="true" className="grain-overlay" />
             <Header />
-            <main>{children}</main>
+            <main className="min-w-0">{children}</main>
             <Footer />
             <WhatsAppFloat />
             <CartDrawer />

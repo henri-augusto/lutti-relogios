@@ -229,12 +229,14 @@ export default async function ProdutoPage({ params }) {
             Detalhes do produto
           </p>
           <h2 className="mt-2 font-serif text-2xl font-bold text-stone-900">Mais informações</h2>
-          <div
-            className="mt-5 max-w-none text-[0.9375rem] leading-relaxed text-stone-600 [&_a]:break-all [&_a]:text-stone-800 [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-[#C9A96E]/50 [&_blockquote]:pl-4 [&_blockquote]:italic [&_h1]:mb-2 [&_h1]:font-serif [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:text-stone-900 [&_h2]:mb-2 [&_h2]:font-serif [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-stone-900 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-lg [&_li]:my-0.5 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-2.5 [&_p]:first:mt-0 [&_p]:last:mb-0 [&_table]:my-2 [&_table]:w-full [&_table]:border-collapse [&_td]:border [&_td]:border-stone-200 [&_td]:p-2 [&_th]:border [&_th]:border-stone-200 [&_th]:bg-stone-50 [&_th]:p-2 [&_th]:text-left [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-6 [&_strong]:font-semibold [&_strong]:text-stone-800"
-            dangerouslySetInnerHTML={{
-              __html: stripDangerousHtmlTags(produto.descricaoComplementar),
-            }}
-          />
+          <div className="mt-5 max-w-full overflow-x-auto">
+            <div
+              className="min-w-0 max-w-none text-[0.9375rem] leading-relaxed text-stone-600 [&_a]:break-all [&_a]:text-stone-800 [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-[#C9A96E]/50 [&_blockquote]:pl-4 [&_blockquote]:italic [&_h1]:mb-2 [&_h1]:font-serif [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:text-stone-900 [&_h2]:mb-2 [&_h2]:font-serif [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-stone-900 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-lg [&_li]:my-0.5 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-2.5 [&_p]:first:mt-0 [&_p]:last:mb-0 [&_pre]:overflow-x-auto [&_table]:my-2 [&_table]:w-full [&_table]:min-w-[min(100%,32rem)] [&_table]:border-collapse [&_td]:border [&_td]:border-stone-200 [&_td]:p-2 [&_th]:border [&_th]:border-stone-200 [&_th]:bg-stone-50 [&_th]:p-2 [&_th]:text-left [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-6 [&_strong]:font-semibold [&_strong]:text-stone-800"
+              dangerouslySetInnerHTML={{
+                __html: stripDangerousHtmlTags(produto.descricaoComplementar),
+              }}
+            />
+          </div>
         </section>
       ) : null}
     </div>
