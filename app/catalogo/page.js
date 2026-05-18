@@ -223,9 +223,9 @@ export default function CatalogoPage({ searchParams }) {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <h1 className="font-serif text-3xl font-bold text-slate-900">Catalogo de relogios</h1>
+        <h1 className="font-serif text-3xl font-bold text-slate-900">Catálogo de Relógios</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Encontre o modelo ideal para seu estilo com compra segura e atendimento dedicado.
+          Encontre o modelo ideal para seu estilo com compra segura e atendimento exclusivo.
         </p>
       </div>
       <Suspense

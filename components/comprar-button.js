@@ -81,7 +81,7 @@ export default function ComprarButton({
         type="button"
         onClick={handleClick}
         disabled={isLoading || semEstoque}
-        className="inline-flex w-full items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        className="inline-flex w-full items-center justify-center rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-[#FDFBF7] transition hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-900/25 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
         {isLoading ? "Adicionando..." : semEstoque ? "Esgotado" : "Comprar"}
       </button>
