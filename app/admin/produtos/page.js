@@ -46,8 +46,8 @@ function featuredResponseToMap(items) {
   return next;
 }
 
-function ProductDetailsModal({ product, loading, error, onClose }) {
-  if (!product && !loading && !error) {
+function ProductDetailsModal({ open, product, loading, error, deleting, onClose, onDelete }) {
+  if (!open && !product && !loading && !error) {
     return null;
   }
 
@@ -55,17 +55,18 @@ function ProductDetailsModal({ product, loading, error, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="max-h-[85vh] w-full max-w-2xl overflow-auto rounded-xl bg-white p-5 shadow-xl sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-stone-900">Produto (Olist)</h2>
+          <h2 className="text-lg font-semibold text-stone-900">Detalhes do produto</h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50"
+            disabled={deleting}
+            className="rounded-md border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Fechar
           </button>
         </div>
 
-        {loading ? <p className="text-sm text-stone-600">Carregando da Olist...</p> : null}
+        {loading ? <p className="text-sm text-stone-600">Carregando...</p> : null}
         {error ? <p className="text-sm text-red-700">{error}</p> : null}
 
         {product ? (
@@ -133,6 +134,22 @@ function ProductDetailsModal({ product, loading, error, onClose }) {
             </div>
           </div>
         ) : null}
+
+        {onDelete ? (
+          <div className={`${product ? "mt-4" : ""} border-t border-stone-200 pt-4`}>
+            <button
+              type="button"
+              onClick={onDelete}
+              disabled={deleting || loading}
+              className="rounded-md border border-red-300 bg-red-50 px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {deleting ? "Excluindo..." : "Excluir produto"}
+            </button>
+            <p className="mt-2 text-xs text-stone-500">
+              Remove do banco local (catalogo e destaques). Não exclui na Olist.
+            </p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -157,8 +174,11 @@ export default function AdminProdutosPage() {
   const [syncingProducts, setSyncingProducts] = useState(false);
   const [syncFeedback, setSyncFeedback] = useState("");
   const [modalItem, setModalItem] = useState(null);
+  const [modalProductId, setModalProductId] = useState("");
   const [modalLoading, setModalLoading] = useState(false);
   const [modalError, setModalError] = useState("");
+  const [deletingProduct, setDeletingProduct] = useState(false);
+  const [deleteFeedback, setDeleteFeedback] = useState("");
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -410,12 +430,25 @@ export default function AdminProdutosPage() {
     }
   }
 
+  function closeProductModal() {
+    setModalItem(null);
+    setModalProductId("");
+    setModalLoading(false);
+    setModalError("");
+    setDeletingProduct(false);
+  }
+
   async function openModalById(productId) {
+    const idKey = String(productId ?? "");
+    if (!idKey) return;
+
+    setModalProductId(idKey);
     setModalLoading(true);
     setModalError("");
     setModalItem(null);
+    setDeleteFeedback("");
     try {
-      const res = await fetch(`/api/admin/produtos/${encodeURIComponent(productId)}`, {
+      const res = await fetch(`/api/admin/produtos/${encodeURIComponent(idKey)}`, {
         cache: "no-store",
       });
       const data = await res.json().catch(() => ({}));
@@ -427,6 +460,53 @@ export default function AdminProdutosPage() {
       setModalError(error?.message || "Falha ao carregar detalhes.");
     } finally {
       setModalLoading(false);
+    }
+  }
+
+  async function handleDeleteProduct() {
+    const idKey = modalProductId || (modalItem?.id != null ? String(modalItem.id) : "");
+    if (!idKey) return;
+
+    const label = modalItem?.sku ? `SKU ${modalItem.sku}` : `ID ${idKey}`;
+    if (
+      !window.confirm(
+        `Excluir o produto ${label} do banco local?\n\nIsso remove catalogo, destaque e favoritos vinculados. O produto continua na Olist.`,
+      )
+    ) {
+      return;
+    }
+
+    setDeleteFeedback("");
+    setDeletingProduct(true);
+    try {
+      const res = await fetch(`/api/admin/produtos/${encodeURIComponent(idKey)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Falha ao excluir produto.");
+      }
+
+      setItems((prev) => prev.filter((item) => String(item.id) !== idKey));
+      setTotalItems((prev) => Math.max(0, prev - 1));
+      setFeaturedById((prev) => {
+        if (!prev[idKey]) return prev;
+        const next = { ...prev };
+        delete next[idKey];
+        return next;
+      });
+      setCatalogById((prev) => {
+        if (!prev[idKey]) return prev;
+        const next = { ...prev };
+        delete next[idKey];
+        return next;
+      });
+      setDeleteFeedback("Produto excluido do banco local.");
+      closeProductModal();
+    } catch (error) {
+      setModalError(error?.message || "Falha ao excluir produto.");
+    } finally {
+      setDeletingProduct(false);
     }
   }
 
@@ -513,6 +593,7 @@ export default function AdminProdutosPage() {
           {featuredFeedback ? <p className="text-sm text-stone-600">{featuredFeedback}</p> : null}
           {catalogFeedback ? <p className="text-sm text-stone-600">{catalogFeedback}</p> : null}
           {syncFeedback ? <p className="text-sm text-stone-600">{syncFeedback}</p> : null}
+          {deleteFeedback ? <p className="text-sm text-stone-600">{deleteFeedback}</p> : null}
         </div>
       </section>
 
@@ -648,14 +729,13 @@ export default function AdminProdutosPage() {
       </section>
 
       <ProductDetailsModal
+        open={Boolean(modalProductId)}
         product={modalItem}
         loading={modalLoading}
         error={modalError}
-        onClose={() => {
-          setModalItem(null);
-          setModalLoading(false);
-          setModalError("");
-        }}
+        deleting={deletingProduct}
+        onClose={closeProductModal}
+        onDelete={modalProductId ? handleDeleteProduct : undefined}
       />
     </div>
   );

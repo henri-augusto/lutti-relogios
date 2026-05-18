@@ -219,16 +219,6 @@ export default async function ProdutoPage({ params }) {
               ))}
             </ul>
 
-            <p className="text-xs leading-relaxed text-stone-500">
-              Cadastro opcional para agilizar o checkout:{" "}
-              <Link
-                href="/cadastro"
-                className="font-semibold text-stone-800 underline underline-offset-2 hover:text-stone-950"
-              >
-                preencher dados
-              </Link>
-              .
-            </p>
           </div>
         </div>
       </article>

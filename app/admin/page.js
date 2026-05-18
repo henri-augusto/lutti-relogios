@@ -6,15 +6,15 @@ export default function AdminPage() {
       <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
         <h1 className="text-3xl font-bold text-stone-900">Painel administrativo</h1>
         <p className="mt-2 text-sm text-stone-600">
-          Acesse as ações principais do painel para conectar a Olist e gerenciar os produtos.
+          Gerencie produtos e acompanhe pedidos pagos da loja.
         </p>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <Link
-            href="/olist/oauth"
+            href="/admin/pedidos"
             className="inline-flex items-center justify-center rounded-md bg-stone-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-stone-800"
           >
-            Conectar com Olist
+            Verificar pedidos
           </Link>
 
           <Link
