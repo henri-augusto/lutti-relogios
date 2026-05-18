@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { resolvePublicBaseUrl } from "@/lib/app-url";
-import { normalizeCheckoutQuantity } from "@/lib/checkout-quantity";
+import {
+  MIN_CHECKOUT_TOTAL_ITEMS,
+  MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
+  normalizeCheckoutQuantity,
+} from "@/lib/checkout-quantity";
 import { CheckoutError, createStripeCheckoutSession } from "@/lib/checkout-session";
 
 function normalizePrecoCentavos(raw) {
@@ -14,22 +18,6 @@ function normalizePrecoCentavos(raw) {
   return Math.round(n);
 }
 
-/**
- * Cria sessao Stripe Checkout. Exige chaves em `.env.local`:
- * - STRIPE_SECRET_KEY (servidor)
- * - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY (validada em lib/stripe-env.js junto com a secret)
- *
- * Metodos de pagamento: dinamicos via Dashboard (lib/stripe-checkout-payment-methods.js).
- * Ative PIX etc. em https://dashboard.stripe.com/settings/payment_methods
- *
- * POST /api/checkout
- * Body JSON:
- * - slug: string (obrigatorio — validado no servidor com o cadastro)
- * - nomeProduto: string (deve ser igual ao nome cadastrado)
- * - preco: number — preco unitario em centavos BRL (deve ser igual ao cadastro)
- * - quantity ou quantidade: inteiro (1–99); padrao 1 se ausente/invalido
- * - customerEmail: string opcional (email valido preenchido no checkout)
- */
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -64,6 +52,11 @@ export async function POST(request) {
 
     if (!items.length) {
       return NextResponse.json({ error: "Carrinho vazio." }, { status: 400 });
+    }
+
+    const totalUnidades = items.reduce((acc, item) => acc + item.quantidade, 0);
+    if (totalUnidades < MIN_CHECKOUT_TOTAL_ITEMS) {
+      return NextResponse.json({ error: MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE }, { status: 400 });
     }
 
     if (items.some((item) => !item.slug)) {

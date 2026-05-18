@@ -5,22 +5,14 @@ import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const FAVORITES_TABLE = "favoritos";
 
-/** Corpo `/api/favorites`: `product.id` na vitrina é tipicamente `olist_id`; a FK `favoritos.product_id` aponta para `produtos.id`. */
+/** Corpo `/api/favorites`: `product.id` na vitrina é o `id` Tiny/Olist; FK em `favoritos.product_id` aponta para `produto.id_supabase` ou `produto.id`. */
 async function lookupProdutoRowPk(supabase, productId) {
   const trimmed = productId.trim();
-  const numeric = Number(trimmed);
-  if (Number.isFinite(numeric) && String(numeric) === trimmed) {
-    const { data, error } = await supabase
-      .from(PRODUTOS_TABLE)
-      .select("id")
-      .eq("olist_id", numeric)
-      .maybeSingle();
-    if (error) {
-      throw error;
-    }
-    return data ?? null;
-  }
-  const { data, error } = await supabase.from(PRODUTOS_TABLE).select("id").eq("id", trimmed).maybeSingle();
+  const { data, error } = await supabase
+    .from(PRODUTOS_TABLE)
+    .select("id, id_supabase")
+    .eq("id", trimmed)
+    .maybeSingle();
   if (error) {
     throw error;
   }
@@ -43,7 +35,7 @@ function getSupabaseOrThrow() {
 }
 
 function mapJoinedRow(row) {
-  const p = row?.produtos;
+  const p = row?.produto ?? row?.produtos;
   if (!p || typeof p !== "object") {
     return null;
   }
@@ -69,7 +61,7 @@ export async function GET(request) {
     const { data, error } = await supabase
       .from(FAVORITES_TABLE)
       .select(
-        `product_id, created_at, produtos ( id, olist_id, descricao, descricao_complementar, precos, estoque, anexos, seo )`,
+        `product_id, created_at, produto ( id, id_supabase, nome, descricaoComplementar, preco, estoqueAtual, anexos, seo, marca )`,
       )
       .eq("usuario_id", userId)
       .order("created_at", { ascending: false });
@@ -107,13 +99,14 @@ export async function POST(request) {
 
     const supabase = getSupabaseOrThrow();
     const product = await lookupProdutoRowPk(supabase, productId);
-    if (!product?.id) {
+    const productPk = product.id_supabase ?? product.id;
+    if (!productPk) {
       return NextResponse.json({ error: "Produto nao encontrado." }, { status: 404 });
     }
 
     const { error: insertError } = await supabase.from(FAVORITES_TABLE).insert({
       usuario_id: userId,
-      product_id: product.id,
+      product_id: productPk,
     });
 
     if (insertError) {
