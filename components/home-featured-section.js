@@ -18,10 +18,16 @@ async function FeaturedProductsContent() {
     produtosDestaque =
       featuredFromAdmin.length > 0 ? featuredFromAdmin.slice(0, 3) : await getProdutosDestaque(3);
   } catch (err) {
-    fetchError =
-      err instanceof ProductsFetchError || err instanceof FeaturedProductsError
-        ? err.message
-        : "Erro inesperado ao buscar produtos no Supabase.";
+    try {
+      produtosDestaque = await getProdutosDestaque(3);
+    } catch (fallbackErr) {
+      fetchError =
+        fallbackErr instanceof ProductsFetchError || fallbackErr instanceof FeaturedProductsError
+          ? fallbackErr.message
+          : err instanceof ProductsFetchError || err instanceof FeaturedProductsError
+            ? err.message
+            : "Erro inesperado ao buscar produtos no Supabase.";
+    }
   }
 
   if (fetchError) {
