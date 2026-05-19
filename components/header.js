@@ -145,10 +145,10 @@ export default function Header() {
   return (
     <div className="sticky top-0 z-40 w-full px-3 pt-2 sm:px-4 sm:pt-2.5 lg:px-6">
       <div
-        className={`mx-auto w-full max-w-6xl rounded-xl border transition-colors duration-300 ${
+        className={`mx-auto w-full max-w-6xl rounded-xl border border-[#EAEAEA]/70 bg-white/88 shadow-sm backdrop-blur-md backdrop-saturate-150 transition-colors duration-300 ${
           isAfterHero
-            ? "border-[#EAEAEA]/70 bg-white/88 shadow-sm backdrop-blur-md backdrop-saturate-150"
-            : "border-transparent bg-transparent shadow-none"
+            ? ""
+            : "md:border-transparent md:bg-transparent md:shadow-none md:backdrop-blur-0 md:backdrop-saturate-100"
         }`}
       >
         <header className="flex w-full min-w-0 items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-6 lg:px-8">
