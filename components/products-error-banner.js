@@ -9,7 +9,7 @@ export default function ProductsErrorBanner({ title = "Nao foi possivel carregar
       <p className="mt-3 text-xs text-red-700">
         Verifique as variaveis NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_ANON_KEY
         (ou NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY), a tabela{" "}
-        <code className="rounded bg-red-100 px-1">products</code> e as politicas RLS no Supabase.
+        <code className="rounded bg-red-100 px-1">produto</code> e as politicas RLS no Supabase.
       </p>
     </div>
   );

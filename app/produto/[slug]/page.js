@@ -4,6 +4,7 @@ import ComprarButton from "@/components/comprar-button";
 import ProductImageGallery from "@/components/product-image-gallery";
 import WhatsAppButton from "@/components/whatsapp-button";
 import { getProdutoBySlug, getProdutos } from "@/lib/domain/produtos";
+import { isStripeCheckoutEnabled } from "@/lib/domain/stripe-checkout-enabled";
 
 function formatPrice(priceInCents) {
   return new Intl.NumberFormat("pt-BR", {
@@ -121,6 +122,7 @@ export default async function ProdutoPage({ params }) {
   const hasDescricaoComplementar = Boolean(plainTextFromHtml(produto.descricaoComplementar));
   const marca = String(produto.marca ?? "").trim();
   const semEstoque = (produto.estoque ?? 0) < 1;
+  const stripeCheckoutEnabled = isStripeCheckoutEnabled();
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
@@ -189,6 +191,7 @@ export default async function ProdutoPage({ params }) {
                   precoCentavos={produto.preco}
                   estoque={produto.estoque}
                   imagemUrl={produto.imagem_url}
+                  disabled={!stripeCheckoutEnabled}
                 />
               </div>
               {semEstoque ? (

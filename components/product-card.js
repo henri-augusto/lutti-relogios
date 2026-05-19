@@ -6,6 +6,7 @@ import { useCart } from "@/components/cart-provider";
 import ProductImageWithFallback from "@/components/product-image-with-fallback";
 import { normalizeCheckoutQuantity } from "@/lib/domain/checkout-quantity";
 import { animateFlyToCart } from "@/lib/domain/fly-to-cart";
+import { isStripeCheckoutEnabled } from "@/lib/domain/stripe-checkout-enabled";
 
 function formatPrice(priceInCents) {
   return new Intl.NumberFormat("pt-BR", {
@@ -99,6 +100,25 @@ function buildCartLineItemFromProduct(product) {
   };
 }
 
+const CARD_BUTTON_CLASS =
+  "inline-flex min-h-9 min-w-0 w-full items-center justify-center gap-1.5 rounded-full bg-stone-900 px-4 text-[11px] font-semibold text-[#FDFBF7] transition-[transform,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-900/25 disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-8 lg:px-3 lg:text-[10px]";
+
+function ProductCardViewProductLink({ product }) {
+  const productHref = `/produto/${product.slug}`;
+
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-1">
+      <Link
+        href={productHref}
+        className={CARD_BUTTON_CLASS}
+        aria-label={`Ver produto ${product.nome ?? ""}`.trim()}
+      >
+        <span>Ver produto</span>
+      </Link>
+    </div>
+  );
+}
+
 function ProductCardAddToCartButton({ product, outOfStock }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -153,7 +173,7 @@ function ProductCardAddToCartButton({ product, outOfStock }) {
               ? "Adicionando ao carrinho"
               : `Comprar ${product.nome ?? "produto"}`
         }
-        className="inline-flex min-h-9 min-w-0 w-full items-center justify-center gap-1.5 rounded-full bg-stone-900 px-4 text-[11px] font-semibold text-[#FDFBF7] transition-[transform,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-900/25 disabled:cursor-not-allowed disabled:opacity-50 lg:min-h-8 lg:px-3 lg:text-[10px]"
+        className={CARD_BUTTON_CLASS}
       >
         {isLoading ? (
           <SpinnerIcon className="h-4 w-4 animate-spin" />
@@ -222,7 +242,11 @@ export default function ProductCard({ product }) {
         </Link>
 
         <div className="border-t border-stone-900/[0.04] px-3 pb-3 pt-2">
-          <ProductCardAddToCartButton product={product} outOfStock={outOfStock} />
+          {isStripeCheckoutEnabled() ? (
+            <ProductCardAddToCartButton product={product} outOfStock={outOfStock} />
+          ) : (
+            <ProductCardViewProductLink product={product} />
+          )}
         </div>
       </div>
     </article>
