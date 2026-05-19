@@ -3,6 +3,7 @@
 .agents/
 .cursor/
 supabase/
+.github
 
 # Environment and secrets
 .env
