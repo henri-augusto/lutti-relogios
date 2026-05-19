@@ -7,6 +7,8 @@ import RevendedoresSection from "@/components/revendedores-section";
 import ScrollRevealOnView from "@/components/scroll-reveal-on-view";
 import Testimonials from "@/components/testimonials";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <div className="relative min-h-screen pb-24">
