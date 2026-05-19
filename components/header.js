@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useCart } from "@/components/cart-provider";
+import { isStripeCheckoutEnabled } from "@/lib/domain/stripe-checkout-enabled";
 
 const links = [
   { href: "/", label: "Início" },
@@ -39,6 +40,7 @@ export default function Header() {
   const { data: session, status } = useSession();
   const userMenuRef = useRef(null);
   const { openCart, totalItems } = useCart();
+  const stripeCheckoutEnabled = isStripeCheckoutEnabled();
   const isAuthenticated = status === "authenticated" && Boolean(session?.user);
   const displayFirstName = useMemo(() => {
     const fullName = session?.user?.name?.trim();
@@ -143,10 +145,10 @@ export default function Header() {
   return (
     <div className="sticky top-0 z-40 w-full px-3 pt-2 sm:px-4 sm:pt-2.5 lg:px-6">
       <div
-        className={`mx-auto w-full max-w-6xl rounded-xl border transition-colors duration-300 ${
+        className={`mx-auto w-full max-w-6xl rounded-xl border border-[#EAEAEA]/70 bg-white/88 shadow-sm backdrop-blur-md backdrop-saturate-150 transition-colors duration-300 ${
           isAfterHero
-            ? "border-[#EAEAEA]/70 bg-white/88 shadow-sm backdrop-blur-md backdrop-saturate-150"
-            : "border-transparent bg-transparent shadow-none"
+            ? ""
+            : "md:border-transparent md:bg-transparent md:shadow-none md:backdrop-blur-0 md:backdrop-saturate-100"
         }`}
       >
         <header className="flex w-full min-w-0 items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-6 lg:px-8">
@@ -266,33 +268,35 @@ export default function Header() {
                 </svg>
               </Link>
             )}
-            <button
-              type="button"
-              aria-label="Carrinho"
-              id="cart-button-anchor"
-              onClick={openCart}
-              className="relative flex h-10 w-10 items-center justify-center rounded-md bg-[#111111] text-white transition-colors hover:bg-[#333333]"
-            >
-              <svg
-                className="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                aria-hidden="true"
+            {stripeCheckoutEnabled ? (
+              <button
+                type="button"
+                aria-label="Carrinho"
+                id="cart-button-anchor"
+                onClick={openCart}
+                className="relative flex h-10 w-10 items-center justify-center rounded-md bg-[#111111] text-white transition-colors hover:bg-[#333333]"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
-                />
-              </svg>
-              {totalItems > 0 ? (
-                <span className="absolute -right-1 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1 text-[10px] font-semibold text-slate-900">
-                  {totalItems}
-                </span>
-              ) : null}
-            </button>
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                  />
+                </svg>
+                {totalItems > 0 ? (
+                  <span className="absolute -right-1 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1 text-[10px] font-semibold text-slate-900">
+                    {totalItems}
+                  </span>
+                ) : null}
+              </button>
+            ) : null}
           </div>
         </header>
 

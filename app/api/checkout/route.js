@@ -6,6 +6,7 @@ import {
   normalizeCheckoutQuantity,
 } from "@/lib/domain/checkout-quantity";
 import { CheckoutError, createStripeCheckoutSession } from "@/lib/domain/checkout-session";
+import { isStripeCheckoutEnabled } from "@/lib/domain/stripe-checkout-enabled";
 
 function normalizePrecoCentavos(raw) {
   if (raw === undefined || raw === null || raw === "") {
@@ -19,6 +20,13 @@ function normalizePrecoCentavos(raw) {
 }
 
 export async function POST(request) {
+  if (!isStripeCheckoutEnabled()) {
+    return NextResponse.json(
+      { error: "Checkout temporariamente indisponível." },
+      { status: 503 },
+    );
+  }
+
   try {
     const body = await request.json();
     const bodyItems = Array.isArray(body?.items) ? body.items : [];

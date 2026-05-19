@@ -80,46 +80,10 @@ function detectMarca(product) {
   return UNKNOWN_BRAND;
 }
 
-function buildFilterHref(activeMarca, activeGenero, nextMarca, nextGenero) {
-  const params = new URLSearchParams();
-  const marca = nextMarca ?? activeMarca;
-  const genero = nextGenero ?? activeGenero;
-
-  if (marca && marca !== ALL_FILTER) {
-    params.set("marca", marca);
-  }
-  if (genero && genero !== ALL_FILTER) {
-    params.set("genero", genero);
-  }
-
-  const query = params.toString();
-  return query ? `/catalogo?${query}` : "/catalogo";
-}
-
-function FilterButton({ href, active, children }) {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? "page" : undefined}
-      className={`block w-full rounded-lg border px-3 py-2 text-left text-sm font-medium leading-snug transition ${
-        active
-          ? "border-slate-900 bg-slate-900 text-white"
-          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
-      }`}
-    >
-      {children}
-    </Link>
-  );
-}
-
 async function CatalogContent({ searchParams }) {
   const resolvedParams = await Promise.resolve(searchParams);
-  const queryMarca = String(resolvedParams?.marca ?? ALL_FILTER)
-    .trim()
-    .toLowerCase();
-  const queryGenero = String(resolvedParams?.genero ?? ALL_FILTER)
-    .trim()
-    .toLowerCase();
+  const queryMarca = normalizeText(resolvedParams?.marca ?? ALL_FILTER);
+  const queryGenero = normalizeText(resolvedParams?.genero ?? ALL_FILTER);
 
   try {
     const produtos = await getProdutos();
@@ -141,6 +105,13 @@ async function CatalogContent({ searchParams }) {
     const generosSet = new Set(generos.map((genero) => normalizeText(genero)));
     const selectedMarca = marcasSet.has(queryMarca) ? queryMarca : ALL_FILTER;
     const selectedGenero = generosSet.has(queryGenero) ? queryGenero : ALL_FILTER;
+    const marcaCounts = new Map();
+    const generoCounts = new Map();
+
+    for (const product of productsWithFilters) {
+      marcaCounts.set(product.__marca, (marcaCounts.get(product.__marca) ?? 0) + 1);
+      generoCounts.set(product.__genero, (generoCounts.get(product.__genero) ?? 0) + 1);
+    }
 
     const filteredProducts = productsWithFilters.filter((product) => {
       const marcaOk = selectedMarca === ALL_FILTER || product.__marcaKey === selectedMarca;
@@ -151,56 +122,66 @@ async function CatalogContent({ searchParams }) {
     return (
       <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Filtrar por marca</h2>
-            <div className="mt-3 space-y-2">
-              <FilterButton
-                href={buildFilterHref(selectedMarca, selectedGenero, ALL_FILTER, null)}
-                active={selectedMarca === ALL_FILTER}
+          <form action="/catalogo" className="space-y-5">
+            <div>
+              <label
+                htmlFor="catalog-marca"
+                className="text-sm font-semibold uppercase tracking-wide text-slate-500"
               >
-                Todas as marcas
-              </FilterButton>
-              {marcas.map((marca) => (
-                <FilterButton
-                  key={marca}
-                  href={buildFilterHref(selectedMarca, selectedGenero, marca, null)}
-                  active={normalizeText(marca) === selectedMarca}
-                >
-                  {marca} ({productsWithFilters.filter((p) => p.__marca === marca).length})
-                </FilterButton>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6 border-t border-slate-100 pt-6">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Filtrar por gênero</h2>
-            <div className="mt-3 space-y-2">
-              <FilterButton
-                href={buildFilterHref(selectedMarca, selectedGenero, null, ALL_FILTER)}
-                active={selectedGenero === ALL_FILTER}
+                Filtrar por marca
+              </label>
+              <select
+                id="catalog-marca"
+                name="marca"
+                defaultValue={selectedMarca}
+                className="mt-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 shadow-sm outline-none transition hover:border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10"
               >
-                Todos os gêneros
-              </FilterButton>
-              {generos.map((genero) => (
-                <FilterButton
-                  key={genero}
-                  href={buildFilterHref(selectedMarca, selectedGenero, null, genero)}
-                  active={normalizeText(genero) === selectedGenero}
-                >
-                  {genero} ({productsWithFilters.filter((p) => p.__genero === genero).length})
-                </FilterButton>
-              ))}
+                <option value={ALL_FILTER}>Todas as marcas</option>
+                {marcas.map((marca) => (
+                  <option key={marca} value={normalizeText(marca)}>
+                    {marca} ({marcaCounts.get(marca) ?? 0})
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
 
-          <div className="mt-6 border-t border-slate-100 pt-4">
-            <Link
-              href="/catalogo"
-              className="text-sm font-semibold text-slate-700 underline underline-offset-2 hover:text-slate-900"
-            >
-              Limpar filtros
-            </Link>
-          </div>
+            <div className="border-t border-slate-100 pt-5">
+              <label
+                htmlFor="catalog-genero"
+                className="text-sm font-semibold uppercase tracking-wide text-slate-500"
+              >
+                Filtrar por gênero
+              </label>
+              <select
+                id="catalog-genero"
+                name="genero"
+                defaultValue={selectedGenero}
+                className="mt-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 shadow-sm outline-none transition hover:border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10"
+              >
+                <option value={ALL_FILTER}>Todos os gêneros</option>
+                {generos.map((genero) => (
+                  <option key={genero} value={normalizeText(genero)}>
+                    {genero} ({generoCounts.get(genero) ?? 0})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-slate-100 pt-4">
+              <button
+                type="submit"
+                className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900/25"
+              >
+                Aplicar filtros
+              </button>
+              <Link
+                href="/catalogo"
+                className="text-center text-sm font-semibold text-slate-700 underline underline-offset-2 hover:text-slate-900"
+              >
+                Limpar filtros
+              </Link>
+            </div>
+          </form>
         </aside>
 
         <div>
@@ -232,7 +213,7 @@ export default function CatalogoPage({ searchParams }) {
         fallback={
           <ProductGridSkeleton
             count={8}
-            gridClassName="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            gridClassName="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"
           />
         }
       >

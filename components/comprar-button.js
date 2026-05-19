@@ -12,6 +12,7 @@ export default function ComprarButton({
   estoque: estoqueProp = 0,
   quantity: quantityProp = 1,
   imagemUrl = "",
+  disabled: disabledProp = false,
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -74,16 +75,31 @@ export default function ComprarButton({
   }
 
   const semEstoque = estoqueDisponivel < 1;
+  const isDisabled = disabledProp || isLoading || semEstoque;
 
   return (
     <div className="flex w-full flex-col gap-2 sm:w-auto">
       <button
         type="button"
         onClick={handleClick}
-        disabled={isLoading || semEstoque}
-        className="inline-flex w-full items-center justify-center rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-[#FDFBF7] transition hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-900/25 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+        disabled={isDisabled}
+        title={
+          disabledProp
+            ? "Compra online temporariamente indisponível. Use o WhatsApp."
+            : semEstoque
+              ? "Produto esgotado"
+              : undefined
+        }
+        aria-label={
+          disabledProp
+            ? "Comprar indisponível — use o WhatsApp"
+            : semEstoque
+              ? "Produto esgotado"
+              : `Comprar ${nomeProduto ?? "produto"}`
+        }
+        className="inline-flex w-full items-center justify-center rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-[#FDFBF7] transition hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-900/25 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
       >
-        {isLoading ? "Adicionando..." : semEstoque ? "Esgotado" : "Comprar"}
+        {disabledProp ? "Comprar" : isLoading ? "Adicionando..." : semEstoque ? "Esgotado" : "Comprar"}
       </button>
       {error ? <p className="max-w-xs text-sm text-red-600 sm:max-w-none">{error}</p> : null}
     </div>

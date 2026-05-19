@@ -6,6 +6,7 @@ import WhatsAppFloat from "@/components/whatsapp-float";
 import AuthSessionProvider from "@/components/session-provider";
 import { CartProvider } from "@/components/cart-provider";
 import CartDrawer from "@/components/cart-drawer";
+import { isStripeCheckoutEnabled } from "@/lib/domain/stripe-checkout-enabled";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -25,6 +26,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const stripeCheckoutEnabled = isStripeCheckoutEnabled();
+
   return (
     <html
       lang="pt-BR"
@@ -39,7 +42,7 @@ export default function RootLayout({ children }) {
             <main className="min-w-0">{children}</main>
             <Footer />
             <WhatsAppFloat />
-            <CartDrawer />
+            {stripeCheckoutEnabled ? <CartDrawer /> : null}
           </CartProvider>
         </AuthSessionProvider>
       </body>

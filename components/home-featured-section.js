@@ -6,6 +6,9 @@ import { ProductsFetchError, getProdutosDestaque } from "@/lib/domain/produtos";
 import { FeaturedProductsError, getFeaturedProducts } from "@/lib/domain/featured-products";
 import { Suspense } from "react";
 
+const FEATURED_PRODUCTS_GRID_CLASS =
+  "grid grid-flow-col auto-cols-[minmax(16rem,82vw)] gap-5 overflow-x-auto overscroll-x-contain pb-2 sm:grid-flow-row sm:auto-cols-auto sm:auto-rows-fr sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-3";
+
 async function FeaturedProductsContent() {
   let produtosDestaque = [];
   let fetchError = null;
@@ -25,7 +28,7 @@ async function FeaturedProductsContent() {
     return <ProductsErrorBanner message={fetchError} />;
   }
 
-  return <ProductGrid products={produtosDestaque} />;
+  return <ProductGrid products={produtosDestaque} className={FEATURED_PRODUCTS_GRID_CLASS} />;
 }
 
 export default function HomeFeaturedSection() {
@@ -66,8 +69,12 @@ export default function HomeFeaturedSection() {
       </div>
 
       <div data-reveal data-reveal-delay={160}>
-        <Suspense fallback={<ProductGridSkeleton count={3} />}>
-        <FeaturedProductsContent />
+        <Suspense
+          fallback={
+            <ProductGridSkeleton count={3} gridClassName={FEATURED_PRODUCTS_GRID_CLASS} />
+          }
+        >
+          <FeaturedProductsContent />
         </Suspense>
       </div>
     </section>
