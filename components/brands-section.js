@@ -81,14 +81,14 @@ export default function BrandsSection() {
             {duplicatedBrands.map((brand, index) => (
               <article
                 key={`${brand.name}-${index}`}
-                className="group flex h-[164px] w-[220px] shrink-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-4 transition-transform duration-300 hover:-translate-y-[1px]"
+                className="group flex h-[164px] w-[280px] shrink-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-5 transition-transform duration-300 hover:-translate-y-[1px]"
               >
-                <div className="flex h-16 items-center justify-center rounded-xl border border-dashed border-stone-300 bg-stone-50 px-3">
+                <div className="flex h-16 items-center justify-center rounded-xl border border-dashed border-stone-300 bg-stone-50 px-5">
                   {brand.logo ? (
                     <img
                       src={brand.logo}
                       alt={`Logo ${brand.name}`}
-                      className="max-h-10 w-auto object-contain"
+                      className="max-h-20 max-w-[220px] object-contain"
                       loading="lazy"
                     />
                   ) : (
