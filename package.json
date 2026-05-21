@@ -1,13 +1,12 @@
 {
   "name": "relojoaria-luti",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "tunnel": "ngrok http 3000"
+    "lint": "eslint"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.0",

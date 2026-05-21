@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { isAdminEmail } from "@/lib/domain/admin-auth";
+import { isMaintenanceModeEnabled } from "@/lib/domain/maintenance-mode";
 
 const ADMIN_LOGIN = "/admin/login";
+const MAINTENANCE_PATH = "/manutencao";
 
 function tokenIsAdmin(token) {
   if (!token) {
@@ -14,14 +16,52 @@ function tokenIsAdmin(token) {
   return isAdminEmail(token.email);
 }
 
-export async function middleware(request) {
+function isStaticAsset(pathname) {
+  return (
+    pathname.startsWith("/_next") ||
+    pathname === "/favicon.ico" ||
+    /\.(?:svg|png|jpg|jpeg|gif|webp|ico|avif)$/i.test(pathname)
+  );
+}
+
+function isMaintenanceBypass(pathname) {
+  if (pathname === MAINTENANCE_PATH) {
+    return true;
+  }
+  if (pathname.startsWith("/api")) {
+    return true;
+  }
+  if (pathname.startsWith("/admin")) {
+    return true;
+  }
+  if (isStaticAsset(pathname)) {
+    return true;
+  }
+  return false;
+}
+
+function handleMaintenanceRedirect(request) {
+  if (!isMaintenanceModeEnabled()) {
+    return null;
+  }
+
+  const { pathname } = request.nextUrl;
+
+  if (isMaintenanceBypass(pathname)) {
+    return null;
+  }
+
+  return NextResponse.redirect(new URL(MAINTENANCE_PATH, request.url));
+}
+
+async function handleAdminProtection(request) {
   const { pathname } = request.nextUrl;
   const isApiAdmin = pathname.startsWith("/api/admin");
   const isAdminArea = pathname.startsWith("/admin");
   const isLoginPage = pathname === ADMIN_LOGIN;
 
   if (!isApiAdmin && !isAdminArea) {
-    return NextResponse.next();
+    return null;
   }
 
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
@@ -56,6 +96,22 @@ export async function middleware(request) {
   return NextResponse.next();
 }
 
+export async function middleware(request) {
+  const maintenanceResponse = handleMaintenanceRedirect(request);
+  if (maintenanceResponse) {
+    return maintenanceResponse;
+  }
+
+  const adminResponse = await handleAdminProtection(request);
+  if (adminResponse) {
+    return adminResponse;
+  }
+
+  return NextResponse.next();
+}
+
 export const config = {
-  matcher: ["/admin", "/admin/:path*", "/api/admin/:path*"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|avif)$).*)",
+  ],
 };
