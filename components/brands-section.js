@@ -5,19 +5,15 @@ const brands = [
   },
   {
     name: "Condor",
-    logo: null,
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/blend171024182016-YrDl84OwPoI9X4VR.png",
   },
   {
     name: "Euro",
-    logo: null,
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/relogio-euro-original-revenda-atacado-Yg2Wo48MBLFn96Bl.png",
   },
   {
     name: "Mormaii",
-    logo: null,
-  },
-  {
-    name: "Champion",
-    logo: null,
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/revenda-relogio-mormaii-autorizada-m7VwPDJLpKCPrVeW.png",
   },
   {
     name: "Citizen",
@@ -25,40 +21,23 @@ const brands = [
   },
   {
     name: "Orient",
-    logo: null,
-  },
-  {
-    name: "Tuguir",
-    logo: null,
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/blend171024180348-YNqyW2jowgsyL9x6.png",
   },
   {
     name: "Backer",
-    logo: null,
-  },
-  {
-    name: "Philyph London",
-    logo: null,
-  },
-  {
-    name: "X Games",
-    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/X_Games_logo.svg",
-  },
-  {
-    name: "Magnum",
-    logo: null,
-  },
-  {
-    name: "Weide",
-    logo: null,
-  },
-  {
-    name: "X-Watch",
-    logo: null,
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/design-sem-nome-5-A3Q7Ln491rSXkaWL.png",
   },
   {
     name: "Seiko",
     logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Seiko_logo.svg",
   },
+  {
+    name: "Michael Kors",
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/michael-kors-original-revenda-atacado-dOqyJpwK5gCWMq6g.png",
+  },{
+    name: "Lince",
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/relogio-lince-para-revenda-original-barato-revender-d95K24kGejH2xw99.png"
+  }
 ];
 
 const duplicatedBrands = [...brands, ...brands];
