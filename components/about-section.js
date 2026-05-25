@@ -3,9 +3,9 @@ import Image from "next/image";
 const aboutBlocks = [
   {
     label: "Nossa História",
-    title: "Desde 1994 no mercado de relógios originais.",
+    title: "Desde 1994 atuamos no mercado de relógios originais.",
     description:
-      "Desde 1994, iniciamos nossa trajetória no tradicional Shopping Mundo Oriental, sempre dedicados ao mercado de relógios originais. Atuavamos com vendas no atacado e varejo, consolidando nossa reputação como referência em qualidade e confiança.",
+      "Começamos nossa jornada no tradicional Shopping Mundo Oriental, com atuação tanto no atacado quanto no varejo. Ao longo desses mais de 30 anos, construímos uma sólida reputação baseada em qualidade, autenticidade e confiança.",
     imageSrc: "/image-nossa-historia.jpeg",
     imageAlt: "Vitrine de relógios originais em exposição",
   },
@@ -13,7 +13,7 @@ const aboutBlocks = [
     label: "Quem somos hoje",
     title: "Distribuição oficial com preço direto de fábrica.",
     description:
-      "Com o passar do tempo, evoluimos e expandimos nossas operações. Hoje, somos distribuidores oficiais de diversas marcas renomadas, oferecendo uma ampla seleção de relógios originais com preços diretos de fábrica. Nosso compromisso é entregar produtos de alta qualidade, atendendo tanto lojistas quanto sacoleiros e feirantes. Sempre com excelência e com as melhores condições do mercado.",
+      "Com o passar dos anos, evoluímos e expandimos nossas operações. Hoje somos distribuidores autorizados de diversas marcas renomadas, oferecendo uma das maiores seleções de relógios originais do mercado com preço de fábrica. Atendemos com excelência lojistas, sacoleiros, feirantes e revendedores de todo o Brasil, sempre com as melhores condições de atacado, margens atrativas e qualidade garantida.",
     imageSrc: "/image-quem-somos-hoje.avif",
     imageAlt: "Equipe separando pedidos e relógios para distribuição",
   },

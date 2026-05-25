@@ -1,5 +1,4 @@
 import HeroBanner from "@/components/hero-banner";
-import Benefits from "@/components/benefits";
 import HomeFeaturedSection from "@/components/home-featured-section";
 import BrandsSection from "@/components/brands-section";
 import AboutSection from "@/components/about-section";
@@ -38,7 +37,6 @@ export default function Home() {
             <BrandsSection />
             <AboutSection />
             <RevendedoresSection />
-            <Benefits />
             <Testimonials />
           </div>
         </div>
