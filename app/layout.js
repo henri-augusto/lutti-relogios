@@ -20,7 +20,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata = {
-  title: "Luti Relógios | Relojoaria Premium",
+  title: "Luti Distribuidora",
   description:
     "Seleção premium de relógios com garantia de 12 meses, envio expresso e suporte exclusivo via WhatsApp.",
 };

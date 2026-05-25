@@ -17,11 +17,11 @@ const brands = [
   },
   {
     name: "Champion",
-    logo: "/champion-logo.png",
+    logo: "https://championrelogios.vtexassets.com/assets/vtex.file-manager-graphql/images/bed3b64f-0032-4971-b9b2-a4ed99a21648___d693f0819aba9d308a906b42b14ceeb0.svg",
   },
   {
     name: "Smartwatch",
-    logo: "https://www.svgrepo.com/show/424992/smartwatch.svg",
+    logo: "/smartwatch_brand.png",
   }
 ];
 

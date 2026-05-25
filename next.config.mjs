@@ -27,6 +27,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "commons.wikimedia.org",
       },
+      {
+        protocol: "https",
+        hostname: "championrelogios.vtexassets.com",
+      }
     ],
   },
 };
