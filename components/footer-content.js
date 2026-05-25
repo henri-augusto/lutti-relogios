@@ -20,7 +20,7 @@ export default function FooterContent({ version }) {
               Luti Relógios
             </p>
             <p className="mt-1 max-w-xs text-sm leading-relaxed text-stone-400">
-              Relógios originais com curadoria, garantia e atendimento exclusivo.
+              Distribuidora Luti, desde 1994.
             </p>
           </div>
 

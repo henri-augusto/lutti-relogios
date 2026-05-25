@@ -16,27 +16,12 @@ const brands = [
     logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/revenda-relogio-mormaii-autorizada-m7VwPDJLpKCPrVeW.png",
   },
   {
-    name: "Citizen",
-    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Citizen_logo.svg",
+    name: "Champion",
+    logo: "/champion-logo.png",
   },
   {
-    name: "Orient",
-    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/blend171024180348-YNqyW2jowgsyL9x6.png",
-  },
-  {
-    name: "Backer",
-    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/design-sem-nome-5-A3Q7Ln491rSXkaWL.png",
-  },
-  {
-    name: "Seiko",
-    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Seiko_logo.svg",
-  },
-  {
-    name: "Michael Kors",
-    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/michael-kors-original-revenda-atacado-dOqyJpwK5gCWMq6g.png",
-  },{
-    name: "Lince",
-    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/relogio-lince-para-revenda-original-barato-revender-d95K24kGejH2xw99.png"
+    name: "Smartwatch",
+    logo: "https://www.svgrepo.com/show/424992/smartwatch.svg",
   }
 ];
 

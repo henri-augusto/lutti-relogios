@@ -7,28 +7,28 @@ const catalogoRevendaWhatsHref = createWhatsAppCustomLink(
 
 const revendedorBlocks = [
   {
-    label: "Realize o cadastro",
-    title: "Cadastro rápido na base de parceiros.",
+    label: "Cadastre-se e comece a vender.",
+    title: "Seja nosso parceiro em poucos cliques.",
     description:
-      "Dados comerciais e documentação básica. Validação ágil para começar com suporte dedicado.",
+      "Faça seu cadastro é libere acesso a milhares de relógios originais a preço de fábrica, melhores condições do mercado e suporte especializado para seu negócio decolar.",
     imageSrc:
       "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80",
     imageAlt: "Pessoa preenchendo cadastro e documentação em notebook",
   },
   {
     label: "Receba nossos catálogos",
-    title: "Materiais com linhas, preços e campanhas.",
+    title: "Estude, separe e economize.",
     description:
-      "Catálogos digitais e orientações de vitrine para apresentar as marcas com clareza.",
+      "Analise nosso catálogo, separe os relógios conforme a demanda do seu negócio, ative descontos progressivos para grandes volumes e aproveite frete grátis após análise do pedido",
     imageSrc:
       "https://images.unsplash.com/photo-1526045431048-f857369baa09?auto=format&fit=crop&w=800&q=80",
     imageAlt: "Vitrine com vários relógios em exposição",
   },
   {
     label: "Prepare-se para ganhar dinheiro",
-    title: "Margem e reposição no ritmo da sua loja.",
+    title: "Margens atrativase reposição no ritmo da sua loja.",
     description:
-      "Mix de originais, preço de distribuidor e logística para varejo, atacado ou feiras.",
+      "Trabalhe com relógios originais, tenha total segurança no negócio e ofereça garantia aos seus clientes.",
     imageSrc:
       "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=800&q=80",
     imageAlt: "Moedas e cédulas simbolizando lucro e crescimento nas vendas",
@@ -55,8 +55,7 @@ export default function RevendedoresSection() {
             data-reveal-delay={80}
             className="mt-2 text-sm leading-relaxed text-[#787774] sm:text-[15px]"
           >
-            Cadastro, catálogos e condições para quem vende no varejo, atacado ou
-            em feiras com relógios originais.
+            Se você é lojista, sacoleiro ou feirante, chegou ao lugar certo.
           </p>
         </header>
 
@@ -100,11 +99,10 @@ export default function RevendedoresSection() {
               Catálogo
             </span>
             <p className="mt-3 font-serif text-xl font-semibold leading-tight tracking-tight text-[#111111] sm:text-2xl">
-              Material para revenda
+              Quer receber o catálogo atualizado?
             </p>
             <p className="mt-2 text-sm leading-[1.6] text-[#787774] sm:text-[15px]">
-              Envie uma mensagem no WhatsApp com o pedido de catálogo: linhas,
-              tabela e condições comerciais.
+              Mande uma mensagem no whatsapp agora e solicite.
             </p>
           </div>
           <a

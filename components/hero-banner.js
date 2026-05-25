@@ -16,21 +16,21 @@ export default function HeroBanner() {
           <div className="anim-fade-up anim-delay-1 inline-flex items-center gap-2 rounded-full border border-stone-300/50 bg-stone-100/60 px-4 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-500">
-              Curadoria Premium · since 1994
+              Distribuidora de Excelência · desde 1994
             </span>
           </div>
 
           {/* Headline */}
           <h1 className="anim-fade-up anim-delay-2 max-w-xl font-serif text-5xl font-bold leading-[1.08] text-stone-900 sm:text-6xl lg:text-[4.25rem]">
-            O relógio certo<br />
-            <em className="not-italic text-amber-700/75">transforma</em><br />
-            quem você é.
+            Distribuidora<br />
+            <em className="not-italic text-amber-700/75">Autorizada</em><br />
+            Há 30 anos.
           </h1>
 
           {/* Body copy */}
           <p className="anim-fade-up anim-delay-3 max-w-md text-base leading-relaxed text-stone-500 sm:text-[1.0625rem]">
-            Seleção com garantia de 12 meses, envio expresso e suporte exclusivo.
-            Do clássico ao contemporâneo — encontre o modelo que fala por você.
+           Preços de fábrica e condições únicas para você e seu negócio decolar.
+            
           </p>
 
           {/* CTAs */}
