@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const whatsappHref = `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5500000000000"}`;
+const whatsappHref = `https://wa.me/5511988856382?text=Olá! Tenho interesse em um produto do site.`;
 
 export default function HeroBanner() {
   return (
