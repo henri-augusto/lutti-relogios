@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
+<<<<<<< HEAD
 import { getToken } from "next-auth/jwt";
 import { mapProdutosRowToCatalog, PRODUTOS_TABLE } from "@/lib/produtos";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
+=======
+import { jsonSupabaseNotConfigured } from "@/lib/api/api-route";
+import { mapProdutosRowToCatalog, PRODUTOS_TABLE } from "@/lib/domain/produtos";
+import { safeJson } from "@/lib/api/request-json";
+import { getSessionUserId } from "@/lib/api/session-user";
+import { requireSupabaseAdmin } from "@/lib/integrations/supabase-admin";
+>>>>>>> main
 
 const FAVORITES_TABLE = "favoritos";
 
@@ -27,6 +35,7 @@ async function lookupProdutoRowPk(supabase, productId) {
   return data ?? null;
 }
 
+<<<<<<< HEAD
 async function getSessionUserId(request) {
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
   return token?.userId ? String(token.userId) : null;
@@ -42,6 +51,8 @@ function getSupabaseOrThrow() {
   return supabase;
 }
 
+=======
+>>>>>>> main
 function mapJoinedRow(row) {
   const p = row?.[PRODUTOS_TABLE];
   if (!p || typeof p !== "object") {
@@ -65,7 +76,11 @@ export async function GET(request) {
       return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
     }
 
+<<<<<<< HEAD
     const supabase = getSupabaseOrThrow();
+=======
+    const supabase = requireSupabaseAdmin();
+>>>>>>> main
     const { data, error } = await supabase
       .from(FAVORITES_TABLE)
       .select(
@@ -81,11 +96,20 @@ export async function GET(request) {
     const favorites = (data ?? []).map(mapJoinedRow).filter(Boolean);
     return NextResponse.json({ favorites });
   } catch (error) {
+<<<<<<< HEAD
     if (error?.code === "SUPABASE_NOT_CONFIGURED") {
       return NextResponse.json(
         { error: "Configuracao do servidor incompleta para favoritos." },
         { status: 503 },
       );
+=======
+    const supabaseResponse = jsonSupabaseNotConfigured(
+      error,
+      "Configuracao do servidor incompleta para favoritos.",
+    );
+    if (supabaseResponse) {
+      return supabaseResponse;
+>>>>>>> main
     }
     console.error("Erro ao listar favoritos:", error);
     return NextResponse.json({ error: "Nao foi possivel carregar favoritos." }, { status: 500 });
@@ -99,13 +123,21 @@ export async function POST(request) {
       return NextResponse.json({ error: "Nao autenticado." }, { status: 401 });
     }
 
+<<<<<<< HEAD
     const body = await request.json().catch(() => ({}));
+=======
+    const body = await safeJson(request);
+>>>>>>> main
     const productId = typeof body?.productId === "string" ? body.productId.trim() : "";
     if (!productId) {
       return NextResponse.json({ error: "productId obrigatorio." }, { status: 400 });
     }
 
+<<<<<<< HEAD
     const supabase = getSupabaseOrThrow();
+=======
+    const supabase = requireSupabaseAdmin();
+>>>>>>> main
     const product = await lookupProdutoRowPk(supabase, productId);
     if (!product?.id) {
       return NextResponse.json({ error: "Produto nao encontrado." }, { status: 404 });
@@ -125,11 +157,20 @@ export async function POST(request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
+<<<<<<< HEAD
     if (error?.code === "SUPABASE_NOT_CONFIGURED") {
       return NextResponse.json(
         { error: "Configuracao do servidor incompleta para favoritos." },
         { status: 503 },
       );
+=======
+    const supabaseResponse = jsonSupabaseNotConfigured(
+      error,
+      "Configuracao do servidor incompleta para favoritos.",
+    );
+    if (supabaseResponse) {
+      return supabaseResponse;
+>>>>>>> main
     }
     console.error("Erro ao adicionar favorito:", error);
     return NextResponse.json({ error: "Nao foi possivel salvar o favorito." }, { status: 500 });
@@ -146,7 +187,11 @@ export async function DELETE(request) {
     const url = new URL(request.url);
     let pid = url.searchParams.get("productId")?.trim() ?? "";
     if (!pid) {
+<<<<<<< HEAD
       const body = await request.json().catch(() => ({}));
+=======
+      const body = await safeJson(request);
+>>>>>>> main
       pid = typeof body?.productId === "string" ? body.productId.trim() : "";
     }
 
@@ -154,7 +199,11 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "productId obrigatorio." }, { status: 400 });
     }
 
+<<<<<<< HEAD
     const supabase = getSupabaseOrThrow();
+=======
+    const supabase = requireSupabaseAdmin();
+>>>>>>> main
     const { error } = await supabase
       .from(FAVORITES_TABLE)
       .delete()
@@ -167,11 +216,20 @@ export async function DELETE(request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
+<<<<<<< HEAD
     if (error?.code === "SUPABASE_NOT_CONFIGURED") {
       return NextResponse.json(
         { error: "Configuracao do servidor incompleta para favoritos." },
         { status: 503 },
       );
+=======
+    const supabaseResponse = jsonSupabaseNotConfigured(
+      error,
+      "Configuracao do servidor incompleta para favoritos.",
+    );
+    if (supabaseResponse) {
+      return supabaseResponse;
+>>>>>>> main
     }
     console.error("Erro ao remover favorito:", error);
     return NextResponse.json({ error: "Nao foi possivel remover o favorito." }, { status: 500 });

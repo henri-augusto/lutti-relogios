@@ -5,6 +5,7 @@ const brands = [
   },
   {
     name: "Condor",
+<<<<<<< HEAD
     logo: null,
   },
   {
@@ -59,6 +60,26 @@ const brands = [
     name: "Seiko",
     logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Seiko_logo.svg",
   },
+=======
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/blend171024182016-YrDl84OwPoI9X4VR.png",
+  },
+  {
+    name: "Euro",
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/relogio-euro-original-revenda-atacado-Yg2Wo48MBLFn96Bl.png",
+  },
+  {
+    name: "Mormaii",
+    logo: "https://assets.zyrosite.com/mePvoPwON5CpE8GZ/revenda-relogio-mormaii-autorizada-m7VwPDJLpKCPrVeW.png",
+  },
+  {
+    name: "Champion",
+    logo: "https://championrelogios.vtexassets.com/assets/vtex.file-manager-graphql/images/bed3b64f-0032-4971-b9b2-a4ed99a21648___d693f0819aba9d308a906b42b14ceeb0.svg",
+  },
+  {
+    name: "Smartwatch",
+    logo: "/smartwatch_brand.png",
+  }
+>>>>>>> main
 ];
 
 const duplicatedBrands = [...brands, ...brands];
@@ -102,14 +123,24 @@ export default function BrandsSection() {
             {duplicatedBrands.map((brand, index) => (
               <article
                 key={`${brand.name}-${index}`}
+<<<<<<< HEAD
                 className="group flex h-[164px] w-[220px] shrink-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-4 transition-transform duration-300 hover:-translate-y-[1px]"
               >
                 <div className="flex h-16 items-center justify-center rounded-xl border border-dashed border-stone-300 bg-stone-50 px-3">
+=======
+                className="group flex h-[164px] w-[280px] shrink-0 flex-col justify-between rounded-2xl border border-stone-200 bg-white p-5 transition-transform duration-300 hover:-translate-y-[1px]"
+              >
+                <div className="flex h-16 items-center justify-center rounded-xl border border-dashed border-stone-300 bg-stone-50 px-5">
+>>>>>>> main
                   {brand.logo ? (
                     <img
                       src={brand.logo}
                       alt={`Logo ${brand.name}`}
+<<<<<<< HEAD
                       className="max-h-10 w-auto object-contain"
+=======
+                      className="max-h-20 max-w-[220px] object-contain"
+>>>>>>> main
                       loading="lazy"
                     />
                   ) : (

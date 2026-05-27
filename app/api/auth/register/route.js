@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+<<<<<<< HEAD
 import { createUser, normalizeCep } from "@/lib/auth-users";
 
 function isEmail(value) {
@@ -8,16 +9,30 @@ function isEmail(value) {
 function isStrongEnoughPassword(value) {
   return typeof value === "string" && value.length >= 6;
 }
+=======
+import { jsonSupabaseNotConfigured } from "@/lib/api/api-route";
+import { createUser, normalizeCep } from "@/lib/domain/auth-users";
+import { validateDocument } from "@/lib/domain/documents";
+import { isEmail, isStrongEnoughPassword, isValidCepDigits } from "@/lib/api/validators";
+>>>>>>> main
 
 export async function POST(request) {
   try {
     const body = await request.json();
+<<<<<<< HEAD
+=======
+    const documentType = body?.documentType === "cnpj" ? "cnpj" : "cpf";
+>>>>>>> main
     const payload = {
       email: body?.email ?? "",
       password: body?.password ?? "",
       fullName: body?.fullName ?? "",
       phone: body?.phone ?? "",
       document: body?.document ?? "",
+<<<<<<< HEAD
+=======
+      documentType,
+>>>>>>> main
       cep: body?.cep ?? "",
       street: body?.street ?? "",
       number: body?.number ?? "",
@@ -59,12 +74,26 @@ export async function POST(request) {
       return NextResponse.json({ error: "A senha deve ter no minimo 6 caracteres." }, { status: 400 });
     }
 
+<<<<<<< HEAD
     const normalizedCep = normalizeCep(payload.cep);
     if (normalizedCep.length !== 8) {
       return NextResponse.json({ error: "CEP invalido." }, { status: 400 });
     }
 
     await createUser({ ...payload, cep: normalizedCep });
+=======
+    const documentCheck = validateDocument(payload.document, payload.documentType);
+    if (!documentCheck.ok) {
+      return NextResponse.json({ error: documentCheck.error }, { status: 400 });
+    }
+
+    const normalizedCep = normalizeCep(payload.cep);
+    if (!isValidCepDigits(normalizedCep)) {
+      return NextResponse.json({ error: "CEP invalido." }, { status: 400 });
+    }
+
+    await createUser({ ...payload, document: documentCheck.digits, cep: normalizedCep });
+>>>>>>> main
     return NextResponse.json({ ok: true });
   } catch (error) {
     // #region agent log
@@ -90,12 +119,21 @@ export async function POST(request) {
       return NextResponse.json({ error: error.message }, { status: 409 });
     }
 
+<<<<<<< HEAD
     if (error?.code === "SUPABASE_NOT_CONFIGURED") {
       return NextResponse.json(
         console.log(error),
         { error: "Configuracao do servidor incompleta para cadastro." },
         { status: 503 },
       );
+=======
+    const supabaseResponse = jsonSupabaseNotConfigured(
+      error,
+      "Configuracao do servidor incompleta para cadastro.",
+    );
+    if (supabaseResponse) {
+      return supabaseResponse;
+>>>>>>> main
     }
 
     if (error?.code === "42501") {

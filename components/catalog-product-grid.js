@@ -27,7 +27,11 @@ export default function CatalogProductGrid({ products }) {
   return (
     <>
       <section
+<<<<<<< HEAD
         className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+=======
+        className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"
+>>>>>>> main
         aria-live="polite"
       >
         {visible.map((product) => (

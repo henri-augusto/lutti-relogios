@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   images: {
     remotePatterns: [
       {
@@ -26,6 +27,13 @@ const nextConfig = {
         protocol: "https",
         hostname: "commons.wikimedia.org",
       },
+<<<<<<< HEAD
+=======
+      {
+        protocol: "https",
+        hostname: "championrelogios.vtexassets.com",
+      }
+>>>>>>> main
     ],
   },
 };

@@ -6,7 +6,11 @@ import { useCart } from "@/components/cart-provider";
 import {
   MIN_CHECKOUT_TOTAL_ITEMS,
   MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
+<<<<<<< HEAD
 } from "@/lib/checkout-quantity";
+=======
+} from "@/lib/domain/checkout-quantity";
+>>>>>>> main
 
 const initialPersonal = {
   fullName: "",
@@ -174,6 +178,7 @@ export default function CheckoutForm() {
       if (!personal.fullName.trim() || !personal.email.trim()) {
         throw new Error("Preencha os dados pessoais obrigatorios.");
       }
+<<<<<<< HEAD
       if (!personal.document.trim()) {
         throw new Error("Informe o CPF.");
       }
@@ -188,6 +193,10 @@ export default function CheckoutForm() {
       }
       if (!address.city.trim() || !address.state.trim()) {
         throw new Error("Preencha cidade e UF (2 letras).");
+=======
+      if (!address.cep.trim() || !address.street.trim() || !address.number.trim()) {
+        throw new Error("Preencha CEP, rua e numero.");
+>>>>>>> main
       }
 
       const response = await fetch("/api/checkout", {
@@ -198,6 +207,7 @@ export default function CheckoutForm() {
           customerEmail: personal.email.trim(),
           nomeCliente: personal.fullName.trim(),
           telefone: personal.phone.trim(),
+<<<<<<< HEAD
           document: personal.document.trim(),
           endereco: enderecoCompleto,
           address: {
@@ -209,6 +219,9 @@ export default function CheckoutForm() {
             city: address.city.trim(),
             state: address.state.trim(),
           },
+=======
+          endereco: enderecoCompleto,
+>>>>>>> main
         }),
       });
 
@@ -306,12 +319,17 @@ export default function CheckoutForm() {
                 />
                 <input
                   type="tel"
+<<<<<<< HEAD
                   required
                   placeholder="Telefone (DDD + numero)"
+=======
+                  placeholder="Telefone"
+>>>>>>> main
                   value={personal.phone}
                   onChange={(event) => setPersonal((previous) => ({ ...previous, phone: event.target.value }))}
                   className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9F8] px-4 py-3 text-sm text-[#111111] placeholder:text-[#787774] outline-none transition focus:border-[#CFCFCD]"
                 />
+<<<<<<< HEAD
                 <input
                   type="text"
                   required
@@ -324,6 +342,8 @@ export default function CheckoutForm() {
                   }
                   className="w-full rounded-md border border-[#EAEAEA] bg-[#F9F9F8] px-4 py-3 text-sm text-[#111111] placeholder:text-[#787774] outline-none transition focus:border-[#CFCFCD]"
                 />
+=======
+>>>>>>> main
                 {status !== "authenticated" && isGuestCheckout ? (
                   <button
                     type="button"
@@ -376,7 +396,10 @@ export default function CheckoutForm() {
               />
               <input
                 type="text"
+<<<<<<< HEAD
                 required
+=======
+>>>>>>> main
                 placeholder="Bairro"
                 value={address.neighborhood}
                 onChange={(event) => setAddress((previous) => ({ ...previous, neighborhood: event.target.value }))}
@@ -384,7 +407,10 @@ export default function CheckoutForm() {
               />
               <input
                 type="text"
+<<<<<<< HEAD
                 required
+=======
+>>>>>>> main
                 placeholder="Cidade"
                 value={address.city}
                 onChange={(event) => setAddress((previous) => ({ ...previous, city: event.target.value }))}
@@ -392,6 +418,7 @@ export default function CheckoutForm() {
               />
               <input
                 type="text"
+<<<<<<< HEAD
                 required
                 placeholder="UF (ex.: SP)"
                 maxLength={2}
@@ -402,6 +429,11 @@ export default function CheckoutForm() {
                     state: event.target.value.toUpperCase().replace(/[^A-Z]/g, ""),
                   }))
                 }
+=======
+                placeholder="Estado"
+                value={address.state}
+                onChange={(event) => setAddress((previous) => ({ ...previous, state: event.target.value }))}
+>>>>>>> main
                 className="rounded-md border border-[#EAEAEA] bg-[#F9F9F8] px-4 py-3 text-sm text-[#111111] placeholder:text-[#787774] outline-none transition focus:border-[#CFCFCD]"
               />
               {isCepLoading ? (
@@ -427,8 +459,14 @@ export default function CheckoutForm() {
               <div className="divide-y divide-[#EAEAEA]">
                 {items.map((item) => (
                   <article key={item.slug} className="py-4 first:pt-0 last:pb-0">
+<<<<<<< HEAD
                     <div className="flex gap-4">
                       <div className="h-24 w-24 shrink-0 overflow-hidden rounded-md border border-[#EAEAEA] bg-[#F9F9F8]">
+=======
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+                      <div className="flex min-w-0 gap-3 sm:flex-1 sm:gap-4">
+                      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md border border-[#EAEAEA] bg-[#F9F9F8] sm:h-24 sm:w-24">
+>>>>>>> main
                         {item.imagemUrl ? (
                           <img
                             src={item.imagemUrl}
@@ -442,8 +480,13 @@ export default function CheckoutForm() {
                         )}
                       </div>
                       <div className="min-w-0 flex-1 space-y-1.5">
+<<<<<<< HEAD
                         <p className="truncate text-sm font-semibold text-[#111111]">{item.nomeProduto}</p>
                         <div className="flex items-center gap-2 pt-0.5">
+=======
+                        <p className="line-clamp-2 text-sm font-semibold text-[#111111] sm:truncate">{item.nomeProduto}</p>
+                        <div className="flex flex-wrap items-center gap-2 pt-0.5">
+>>>>>>> main
                           <span className="text-xs text-[#787774]">Quantidade:</span>
                           <button
                             type="button"
@@ -454,7 +497,11 @@ export default function CheckoutForm() {
                               }
                               updateQuantity(item.slug, item.quantity - 1);
                             }}
+<<<<<<< HEAD
                             className="inline-flex h-6 w-6 items-center justify-center rounded border border-[#EAEAEA] bg-white text-sm font-semibold text-[#2F3437] transition hover:border-[#D4D4D2] hover:bg-[#F9F9F8]"
+=======
+                            className="inline-flex h-8 w-8 items-center justify-center rounded border border-[#EAEAEA] bg-white text-sm font-semibold text-[#2F3437] transition hover:border-[#D4D4D2] hover:bg-[#F9F9F8] sm:h-6 sm:w-6"
+>>>>>>> main
                             aria-label={`Diminuir quantidade de ${item.nomeProduto}`}
                           >
                             -
@@ -466,7 +513,11 @@ export default function CheckoutForm() {
                             type="button"
                             onClick={() => updateQuantity(item.slug, item.quantity + 1)}
                             disabled={item.estoque > 0 && item.quantity >= item.estoque}
+<<<<<<< HEAD
                             className="inline-flex h-6 w-6 items-center justify-center rounded border border-[#EAEAEA] bg-white text-sm font-semibold text-[#2F3437] transition hover:border-[#D4D4D2] hover:bg-[#F9F9F8] disabled:cursor-not-allowed disabled:opacity-60"
+=======
+                            className="inline-flex h-8 w-8 items-center justify-center rounded border border-[#EAEAEA] bg-white text-sm font-semibold text-[#2F3437] transition hover:border-[#D4D4D2] hover:bg-[#F9F9F8] disabled:cursor-not-allowed disabled:opacity-60 sm:h-6 sm:w-6"
+>>>>>>> main
                             aria-label={`Aumentar quantidade de ${item.nomeProduto}`}
                           >
                             +
@@ -475,7 +526,12 @@ export default function CheckoutForm() {
                         <p className="text-xs text-[#787774]">Preco unitario: {formatPrice(item.precoCentavos)}</p>
                         <p className="text-xs text-[#787774]">Estoque disponivel: {item.estoque}</p>
                       </div>
+<<<<<<< HEAD
                       <p className="text-sm font-semibold text-[#111111]">
+=======
+                      </div>
+                      <p className="shrink-0 text-sm font-semibold text-[#111111] sm:pt-1">
+>>>>>>> main
                         {formatPrice(item.precoCentavos * item.quantity)}
                       </p>
                     </div>

@@ -4,9 +4,15 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import WhatsAppFloat from "@/components/whatsapp-float";
 import AuthSessionProvider from "@/components/session-provider";
+<<<<<<< HEAD
 import { FavoritesProvider } from "@/components/favorites-context";
 import { CartProvider } from "@/components/cart-provider";
 import CartDrawer from "@/components/cart-drawer";
+=======
+import { CartProvider } from "@/components/cart-provider";
+import CartDrawer from "@/components/cart-drawer";
+import { isStripeCheckoutEnabled } from "@/lib/domain/stripe-checkout-enabled";
+>>>>>>> main
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
@@ -20,12 +26,14 @@ const playfair = Playfair_Display({
 });
 
 export const metadata = {
-  title: "Luti Relógios | Relojoaria Premium",
+  title: "Luti Distribuidora",
   description:
     "Seleção premium de relógios com garantia de 12 meses, envio expresso e suporte exclusivo via WhatsApp.",
 };
 
 export default function RootLayout({ children }) {
+  const stripeCheckoutEnabled = isStripeCheckoutEnabled();
+
   return (
     <html
       lang="pt-BR"
@@ -34,6 +42,7 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full bg-white text-stone-900">
         <AuthSessionProvider>
+<<<<<<< HEAD
           <FavoritesProvider>
             <CartProvider>
               <div aria-hidden="true" className="grain-overlay" />
@@ -44,6 +53,16 @@ export default function RootLayout({ children }) {
               <CartDrawer />
             </CartProvider>
           </FavoritesProvider>
+=======
+          <CartProvider>
+            <div aria-hidden="true" className="grain-overlay" />
+            <Header />
+            <main className="min-w-0">{children}</main>
+            <Footer />
+            <WhatsAppFloat />
+            {stripeCheckoutEnabled ? <CartDrawer /> : null}
+          </CartProvider>
+>>>>>>> main
         </AuthSessionProvider>
       </body>
     </html>

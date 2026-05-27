@@ -1,11 +1,15 @@
 import HeroBanner from "@/components/hero-banner";
-import Benefits from "@/components/benefits";
 import HomeFeaturedSection from "@/components/home-featured-section";
 import BrandsSection from "@/components/brands-section";
 import AboutSection from "@/components/about-section";
 import RevendedoresSection from "@/components/revendedores-section";
 import ScrollRevealOnView from "@/components/scroll-reveal-on-view";
 import Testimonials from "@/components/testimonials";
+<<<<<<< HEAD
+=======
+
+export const dynamic = "force-dynamic";
+>>>>>>> main
 
 export default function Home() {
   return (
@@ -36,7 +40,10 @@ export default function Home() {
             <BrandsSection />
             <AboutSection />
             <RevendedoresSection />
+<<<<<<< HEAD
             <Benefits />
+=======
+>>>>>>> main
             <Testimonials />
           </div>
         </div>

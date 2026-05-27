@@ -5,7 +5,11 @@ import { useCart } from "@/components/cart-provider";
 import {
   MIN_CHECKOUT_TOTAL_ITEMS,
   MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
+<<<<<<< HEAD
 } from "@/lib/checkout-quantity";
+=======
+} from "@/lib/domain/checkout-quantity";
+>>>>>>> main
 
 function formatPrice(priceInCents) {
   return new Intl.NumberFormat("pt-BR", {
@@ -109,4 +113,8 @@ export default function CartDrawer() {
       </aside>
     </>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main

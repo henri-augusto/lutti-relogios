@@ -59,6 +59,11 @@ SUPABASE_SERVICE_ROLE_KEY=sua_service_role_key
 # Auth (NextAuth)
 NEXTAUTH_SECRET=gere_um_valor_forte_com_32+_caracteres
 NEXTAUTH_URL=http://localhost:3000
+<<<<<<< HEAD
+=======
+# E-mails com acesso ao painel /admin (conta ja cadastrada em /auth/register)
+ADMIN_EMAILS=seu@email.com,outro@email.com
+>>>>>>> main
 
 # Tiny/Olist OAuth 2
 OLIST_CLIENT_ID=seu_client_id
@@ -103,6 +108,10 @@ create table if not exists public.usuarios (
   full_name text not null,
   phone text default '',
   document text default '',
+<<<<<<< HEAD
+=======
+  document_type text not null default 'cpf',
+>>>>>>> main
   cep text not null,
   street text not null,
   number text not null,
@@ -114,6 +123,16 @@ create table if not exists public.usuarios (
 );
 ```
 
+<<<<<<< HEAD
+=======
+Se a tabela ja existir, adicione o tipo de documento:
+
+```sql
+alter table public.usuarios
+  add column if not exists document_type text not null default 'cpf';
+```
+
+>>>>>>> main
 Fluxo implementado:
 - Clique no icone de login do header abre `/auth` em nova aba.
 - Em `/auth` ha aba de login (NextAuth Credentials) e aba de cadastro.

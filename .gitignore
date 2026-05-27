@@ -3,6 +3,10 @@
 .agents/
 .cursor/
 supabase/
+<<<<<<< HEAD
+=======
+.github
+>>>>>>> main
 
 # Environment and secrets
 .env

@@ -16,21 +16,25 @@ export default function HeroBanner() {
           <div className="anim-fade-up anim-delay-1 inline-flex items-center gap-2 rounded-full border border-stone-300/50 bg-stone-100/60 px-4 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-500">
+<<<<<<< HEAD
               Curadoria Premium · since 1994
+=======
+              Distribuidora de Excelência · desde 1994
+>>>>>>> main
             </span>
           </div>
 
           {/* Headline */}
           <h1 className="anim-fade-up anim-delay-2 max-w-xl font-serif text-5xl font-bold leading-[1.08] text-stone-900 sm:text-6xl lg:text-[4.25rem]">
-            O relógio certo<br />
-            <em className="not-italic text-amber-700/75">transforma</em><br />
-            quem você é.
+            Distribuidora<br />
+            <em className="not-italic text-amber-700/75">Autorizada</em><br />
+            Há 30 anos.
           </h1>
 
           {/* Body copy */}
           <p className="anim-fade-up anim-delay-3 max-w-md text-base leading-relaxed text-stone-500 sm:text-[1.0625rem]">
-            Seleção com garantia de 12 meses, envio expresso e suporte exclusivo.
-            Do clássico ao contemporâneo — encontre o modelo que fala por você.
+           Preços de fábrica e condições únicas para você e seu negócio decolar.
+            
           </p>
 
           {/* CTAs */}
@@ -70,7 +74,11 @@ export default function HeroBanner() {
               <div className="absolute left-1 top-2 z-0 h-[52%] w-[56%] sm:left-1.5 sm:top-2.5 lg:left-2 lg:top-3 lg:-rotate-[1.1deg]">
                 <div className="relative h-full w-full overflow-hidden rounded-[1.35rem] shadow-[0_28px_72px_-40px_rgba(28,25,23,0.14)]">
                   <Image
+<<<<<<< HEAD
                     src="/image-hero.jpeg"
+=======
+                    src="/image-hero-technos.png"
+>>>>>>> main
                     alt="Relógio premium em destaque"
                     fill
                     priority

@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
 import {
@@ -10,6 +11,9 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+=======
+import { useEffect, useRef, useState } from "react";
+>>>>>>> main
 
 /** @typedef {{ name: string; rating: number; comment: string }} TestimonialItem */
 
@@ -18,18 +22,27 @@ const DEFAULT_TESTIMONIALS = /** @type {const} */ (
     {
       name: "Gustavo Salomão",
       rating: 5,
+<<<<<<< HEAD
       comment: "Ótimo atendimento, marcas e relógios excelentes!!!",
+=======
+      comment:
+        "Ótimo atendimento, marcas e relógios excelentes!!!",
+>>>>>>> main
     },
     {
       name: "Ana C",
       rating: 5,
       comment:
+<<<<<<< HEAD
         "Otimo atendimendo e relogios com preço bom e garantia.",
     },
     {
       name: "Carlos Albino Simões (Alemão)",
       rating: 5,
       comment: "Ótimo atendimendo e relógios com preço bom e garantia.",
+=======
+        "Ótimo atendimendo e relógios com preço bom e garantia.",
+>>>>>>> main
     },
     {
       name: "Carlos Albino Simões",
@@ -40,7 +53,12 @@ const DEFAULT_TESTIMONIALS = /** @type {const} */ (
     {
       name: "Jurema Cristiane Bastos Moscogliato",
       rating: 5,
+<<<<<<< HEAD
       comment: "Preço acessível, variedade de modelos, produtos originais...",
+=======
+      comment:
+        "Preço acessível, variedade de modelos, produtos originais...",
+>>>>>>> main
     },
     {
       name: "Enzo H",
@@ -233,6 +251,7 @@ function TestimonialCard({ testimonial, index, visible, stagger = true }) {
   );
 }
 
+<<<<<<< HEAD
 /** Intervalo do autoplay (plugin Embla) */
 const DEFAULT_AUTOPLAY_MS = 9000;
 /** Duração da rolagem animada (Embla, maior = deslocamento mais lento) */
@@ -278,6 +297,13 @@ function CarouselIconNext({ className = "" }) {
 /**
  * Depoimentos de clientes: carrossel Embla com autoplay, setas, arraste e loop.
  *
+=======
+const DEFAULT_GOOGLE_REVIEWS_URL =
+  "https://www.google.com/search?q=Luti+Rel%C3%B3gios+avalia%C3%A7%C3%B5es+Google";
+
+/**
+ * Depoimentos de clientes: faixa horizontal infinita (mesmo padrão de `brands-section.js` / `.brands-marquee` em `globals.css`).
+>>>>>>> main
  * @param {{
  *  testimonials?: TestimonialItem[];
  *  className?: string;
@@ -285,9 +311,13 @@ function CarouselIconNext({ className = "" }) {
  *  id?: string;
  *  googleReviewsUrl?: string;
  *  subtitle?: string;
+<<<<<<< HEAD
  *  autoplayDelay?: number;
  * }} [props]
  * @remarks Autoplay padrão ~9s. Pausa com hover e após interação (plugin). Desacelera com prefers-reduced-motion.
+=======
+ * }} [props]
+>>>>>>> main
  */
 export default function Testimonials({
   testimonials = DEFAULT_TESTIMONIALS,
@@ -296,12 +326,16 @@ export default function Testimonials({
   id = "depoimentos",
   googleReviewsUrl = DEFAULT_GOOGLE_REVIEWS_URL,
   subtitle = "Depoimentos reais de quem comprou e recomenda a Luti Relógios.",
+<<<<<<< HEAD
   autoplayDelay = DEFAULT_AUTOPLAY_MS,
+=======
+>>>>>>> main
 }) {
   const list =
     Array.isArray(testimonials) && testimonials.length > 0
       ? testimonials
       : DEFAULT_TESTIMONIALS;
+<<<<<<< HEAD
   const n = list.length;
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -350,6 +384,12 @@ export default function Testimonials({
     (index) => emblaApi?.scrollTo(index),
     [emblaApi]
   );
+=======
+  const sectionRef = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  const duplicatedTestimonials = list.length > 1 ? [...list, ...list] : list;
+>>>>>>> main
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -365,6 +405,7 @@ export default function Testimonials({
     return () => obs.disconnect();
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     if (!emblaApi) return undefined;
     onEmblaSelect();
@@ -397,6 +438,8 @@ export default function Testimonials({
     return () => mq.removeEventListener("change", sync);
   }, [emblaApi]);
 
+=======
+>>>>>>> main
   return (
     <section
       ref={sectionRef}
@@ -453,6 +496,7 @@ export default function Testimonials({
               </div>
             ) : (
               <div
+<<<<<<< HEAD
                 className="relative"
                 id={`${id}-carousel`}
                 role="region"
@@ -523,10 +567,35 @@ export default function Testimonials({
                   >
                     <CarouselIconNext className="h-5 w-5" />
                   </button>
+=======
+                className="relative overflow-hidden rounded-2xl border border-stone-200/80 bg-white/75 p-3"
+                id={`${id}-carousel`}
+                role="region"
+                aria-label="Depoimentos de clientes do Google em rolagem contínua"
+              >
+                <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-stone-50 via-stone-50/80 to-transparent" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-stone-50 via-stone-50/80 to-transparent" />
+
+                <div className="brands-marquee flex w-max gap-4 py-1 will-change-transform sm:gap-5">
+                  {duplicatedTestimonials.map((item, index) => (
+                    <div
+                      key={`${item.name}-${index}`}
+                      className="w-[min(20rem,calc(100vw-3.5rem))] shrink-0 sm:w-[22rem] md:w-[24rem]"
+                    >
+                      <TestimonialCard
+                        testimonial={item}
+                        index={index}
+                        visible={visible}
+                        stagger={false}
+                      />
+                    </div>
+                  ))}
+>>>>>>> main
                 </div>
               </div>
             )}
           </div>
+<<<<<<< HEAD
 
           <div className="relative mx-auto mt-10 max-w-2xl text-center sm:mt-16 lg:mt-20">
             <a
@@ -545,6 +614,8 @@ export default function Testimonials({
               </span>
             </a>
           </div>
+=======
+>>>>>>> main
         </div>
       </div>
     </section>

@@ -93,12 +93,27 @@ export default function AuthPanel() {
             </button>
           </form>
 
+<<<<<<< HEAD
           <div className="mt-5 flex items-center gap-4 text-sm text-stone-600">
             <Link href="/auth/forgot-password" className="hover:text-stone-900 hover:underline">
               Esqueci minha senha
             </Link>
             <span className="text-stone-400">|</span>
             <Link href="/auth/register" className="font-medium text-stone-800 hover:text-stone-950 hover:underline">
+=======
+          <div className="mt-5 flex flex-col gap-3 text-sm text-stone-600 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <Link
+              href="/auth/forgot-password"
+              className="inline-flex min-h-11 items-center hover:text-stone-900 hover:underline"
+            >
+              Esqueci minha senha
+            </Link>
+            <span className="hidden text-stone-400 sm:inline">|</span>
+            <Link
+              href="/auth/register"
+              className="inline-flex min-h-11 items-center font-medium text-stone-800 hover:text-stone-950 hover:underline"
+            >
+>>>>>>> main
               Criar conta
             </Link>
           </div>

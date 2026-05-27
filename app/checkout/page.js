@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 import CheckoutForm from "@/components/checkout-form";
+=======
+import { redirect } from "next/navigation";
+import CheckoutForm from "@/components/checkout-form";
+import { isStripeCheckoutEnabled } from "@/lib/domain/stripe-checkout-enabled";
+>>>>>>> main
 
 export const metadata = {
   title: "Checkout | Luti Relogios",
@@ -6,6 +12,13 @@ export const metadata = {
 };
 
 export default function CheckoutPage() {
+<<<<<<< HEAD
+=======
+  if (!isStripeCheckoutEnabled()) {
+    redirect("/catalogo");
+  }
+
+>>>>>>> main
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">

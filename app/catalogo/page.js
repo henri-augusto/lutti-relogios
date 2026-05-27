@@ -1,7 +1,11 @@
 import CatalogProductGrid from "@/components/catalog-product-grid";
 import ProductGridSkeleton from "@/components/product-grid-skeleton";
 import ProductsErrorBanner from "@/components/products-error-banner";
+<<<<<<< HEAD
 import { ProductsFetchError, getProdutos } from "@/lib/produtos";
+=======
+import { ProductsFetchError, getProdutos } from "@/lib/domain/produtos";
+>>>>>>> main
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -80,6 +84,7 @@ function detectMarca(product) {
   return UNKNOWN_BRAND;
 }
 
+<<<<<<< HEAD
 function buildFilterHref(activeMarca, activeGenero, nextMarca, nextGenero) {
   const params = new URLSearchParams();
   const marca = nextMarca ?? activeMarca;
@@ -120,6 +125,12 @@ async function CatalogContent({ searchParams }) {
   const queryGenero = String(resolvedParams?.genero ?? ALL_FILTER)
     .trim()
     .toLowerCase();
+=======
+async function CatalogContent({ searchParams }) {
+  const resolvedParams = await Promise.resolve(searchParams);
+  const queryMarca = normalizeText(resolvedParams?.marca ?? ALL_FILTER);
+  const queryGenero = normalizeText(resolvedParams?.genero ?? ALL_FILTER);
+>>>>>>> main
 
   try {
     const produtos = await getProdutos();
@@ -141,6 +152,16 @@ async function CatalogContent({ searchParams }) {
     const generosSet = new Set(generos.map((genero) => normalizeText(genero)));
     const selectedMarca = marcasSet.has(queryMarca) ? queryMarca : ALL_FILTER;
     const selectedGenero = generosSet.has(queryGenero) ? queryGenero : ALL_FILTER;
+<<<<<<< HEAD
+=======
+    const marcaCounts = new Map();
+    const generoCounts = new Map();
+
+    for (const product of productsWithFilters) {
+      marcaCounts.set(product.__marca, (marcaCounts.get(product.__marca) ?? 0) + 1);
+      generoCounts.set(product.__genero, (generoCounts.get(product.__genero) ?? 0) + 1);
+    }
+>>>>>>> main
 
     const filteredProducts = productsWithFilters.filter((product) => {
       const marcaOk = selectedMarca === ALL_FILTER || product.__marcaKey === selectedMarca;
@@ -151,6 +172,7 @@ async function CatalogContent({ searchParams }) {
     return (
       <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+<<<<<<< HEAD
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Filtrar por marca</h2>
             <div className="mt-3 space-y-2">
@@ -201,6 +223,68 @@ async function CatalogContent({ searchParams }) {
               Limpar filtros
             </Link>
           </div>
+=======
+          <form action="/catalogo" className="space-y-5">
+            <div>
+              <label
+                htmlFor="catalog-marca"
+                className="text-sm font-semibold uppercase tracking-wide text-slate-500"
+              >
+                Filtrar por marca
+              </label>
+              <select
+                id="catalog-marca"
+                name="marca"
+                defaultValue={selectedMarca}
+                className="mt-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 shadow-sm outline-none transition hover:border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10"
+              >
+                <option value={ALL_FILTER}>Todas as marcas</option>
+                {marcas.map((marca) => (
+                  <option key={marca} value={normalizeText(marca)}>
+                    {marca} ({marcaCounts.get(marca) ?? 0})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="border-t border-slate-100 pt-5">
+              <label
+                htmlFor="catalog-genero"
+                className="text-sm font-semibold uppercase tracking-wide text-slate-500"
+              >
+                Filtrar por gênero
+              </label>
+              <select
+                id="catalog-genero"
+                name="genero"
+                defaultValue={selectedGenero}
+                className="mt-3 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 shadow-sm outline-none transition hover:border-slate-300 focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10"
+              >
+                <option value={ALL_FILTER}>Todos os gêneros</option>
+                {generos.map((genero) => (
+                  <option key={genero} value={normalizeText(genero)}>
+                    {genero} ({generoCounts.get(genero) ?? 0})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-slate-100 pt-4">
+              <button
+                type="submit"
+                className="rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900/25"
+              >
+                Aplicar filtros
+              </button>
+              <Link
+                href="/catalogo"
+                className="text-center text-sm font-semibold text-slate-700 underline underline-offset-2 hover:text-slate-900"
+              >
+                Limpar filtros
+              </Link>
+            </div>
+          </form>
+>>>>>>> main
         </aside>
 
         <div>
@@ -223,16 +307,20 @@ export default function CatalogoPage({ searchParams }) {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <h1 className="font-serif text-3xl font-bold text-slate-900">Catalogo de relogios</h1>
+        <h1 className="font-serif text-3xl font-bold text-slate-900">Catálogo de Relógios</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Encontre o modelo ideal para seu estilo com compra segura e atendimento dedicado.
+          Encontre o modelo ideal para seu estilo com compra segura e atendimento exclusivo.
         </p>
       </div>
       <Suspense
         fallback={
           <ProductGridSkeleton
             count={8}
+<<<<<<< HEAD
             gridClassName="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+=======
+            gridClassName="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4"
+>>>>>>> main
           />
         }
       >

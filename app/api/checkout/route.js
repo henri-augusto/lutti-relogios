@@ -1,14 +1,24 @@
 import { NextResponse } from "next/server";
+<<<<<<< HEAD
 import { getToken } from "next-auth/jwt";
 import { findUserById, normalizeCep, normalizeEmail } from "@/lib/auth-users";
 import { resolvePublicBaseUrl } from "@/lib/app-url";
 import { firstCheckoutValidationError } from "@/lib/checkout-validacao";
+=======
+import { resolvePublicBaseUrl } from "@/lib/api/app-url";
+>>>>>>> main
 import {
   MIN_CHECKOUT_TOTAL_ITEMS,
   MIN_CHECKOUT_TOTAL_ITEMS_ERROR_MESSAGE,
   normalizeCheckoutQuantity,
+<<<<<<< HEAD
 } from "@/lib/checkout-quantity";
 import { CheckoutError, createStripeCheckoutSession } from "@/lib/checkout-session";
+=======
+} from "@/lib/domain/checkout-quantity";
+import { CheckoutError, createStripeCheckoutSession } from "@/lib/domain/checkout-session";
+import { isStripeCheckoutEnabled } from "@/lib/domain/stripe-checkout-enabled";
+>>>>>>> main
 
 function normalizePrecoCentavos(raw) {
   if (raw === undefined || raw === null || raw === "") {
@@ -21,6 +31,7 @@ function normalizePrecoCentavos(raw) {
   return Math.round(n);
 }
 
+<<<<<<< HEAD
 function buildEnderecoCompleto(address) {
   const cep = normalizeCep(address?.cep ?? "");
   const street = typeof address?.street === "string" ? address.street.trim() : "";
@@ -58,7 +69,16 @@ function buildEnderecoCompleto(address) {
  * - customerEmail: string opcional (email valido preenchido no checkout)
  * - document, telefone, nomeCliente, address: { cep, street, number, complement, neighborhood, city, state }
  */
+=======
+>>>>>>> main
 export async function POST(request) {
+  if (!isStripeCheckoutEnabled()) {
+    return NextResponse.json(
+      { error: "Checkout temporariamente indisponível." },
+      { status: 503 },
+    );
+  }
+
   try {
     const body = await request.json();
     const bodyItems = Array.isArray(body?.items) ? body.items : [];
@@ -90,6 +110,7 @@ export async function POST(request) {
     const telefone = body?.telefone ?? body?.phone;
     const document = body?.document ?? body?.cpf;
 
+<<<<<<< HEAD
     const addressRaw = body?.address && typeof body.address === "object" ? body.address : body;
     const address = {
       cep: addressRaw?.cep ?? "",
@@ -101,6 +122,8 @@ export async function POST(request) {
       state: addressRaw?.state ?? "",
     };
 
+=======
+>>>>>>> main
     if (!items.length) {
       return NextResponse.json({ error: "Carrinho vazio." }, { status: 400 });
     }

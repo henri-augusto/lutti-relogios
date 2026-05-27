@@ -1,8 +1,15 @@
 "use client";
 
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+=======
+import { useEffect, useMemo, useState } from "react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { formatDocument, validateDocument } from "@/lib/domain/documents";
+>>>>>>> main
 
 const inputClasses =
   "w-full rounded-2xl border border-stone-200/80 bg-white/95 px-4 py-2.5 text-sm text-stone-900 outline-none transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] focus:-translate-y-px focus:border-stone-400 focus:ring-4 focus:ring-stone-200/70";
@@ -13,6 +20,10 @@ const initialRegister = {
   fullName: "",
   phone: "",
   document: "",
+<<<<<<< HEAD
+=======
+  documentType: "cpf",
+>>>>>>> main
   cep: "",
   street: "",
   number: "",
@@ -35,6 +46,36 @@ export default function RegisterPanel() {
     return () => clearTimeout(timeout);
   }, []);
 
+<<<<<<< HEAD
+=======
+  const documentType = registerData.documentType === "cnpj" ? "cnpj" : "cpf";
+
+  const labels = useMemo(() => {
+    if (documentType === "cnpj") {
+      return {
+        section: "Dados da empresa",
+        name: "Razao social",
+        document: "CNPJ",
+      };
+    }
+
+    return {
+      section: "Dados pessoais",
+      name: "Nome completo",
+      document: "CPF",
+    };
+  }, [documentType]);
+
+  const handleDocumentTypeChange = (nextType) => {
+    setRegisterData((prev) => ({
+      ...prev,
+      documentType: nextType,
+      document: "",
+    }));
+    setError("");
+  };
+
+>>>>>>> main
   const handleRegisterSubmit = async (event) => {
     event.preventDefault();
     if (registerData.password !== confirmPassword) {
@@ -43,6 +84,16 @@ export default function RegisterPanel() {
       return;
     }
 
+<<<<<<< HEAD
+=======
+    const documentCheck = validateDocument(registerData.document, documentType);
+    if (!documentCheck.ok) {
+      setError(documentCheck.error);
+      setMessage("");
+      return;
+    }
+
+>>>>>>> main
     setBusyRegister(true);
     setError("");
     setMessage("");
@@ -113,10 +164,41 @@ export default function RegisterPanel() {
 
           <form className="mt-6 space-y-5" onSubmit={handleRegisterSubmit}>
             <div className="rounded-2xl border border-stone-200 bg-stone-50/70 p-4">
+<<<<<<< HEAD
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-stone-600">Dados pessoais</p>
               <div className="grid gap-4 sm:grid-cols-2">
                 <label>
                   <span className="mb-1 block text-sm font-medium text-stone-700">Nome completo</span>
+=======
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-stone-600">{labels.section}</p>
+              <div className="mb-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleDocumentTypeChange("cpf")}
+                  className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
+                    documentType === "cpf"
+                      ? "bg-stone-900 text-white"
+                      : "border border-stone-300 bg-white text-stone-700"
+                  }`}
+                >
+                  Pessoa fisica (CPF)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDocumentTypeChange("cnpj")}
+                  className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide transition ${
+                    documentType === "cnpj"
+                      ? "bg-emerald-800 text-white"
+                      : "border border-stone-300 bg-white text-stone-700"
+                  }`}
+                >
+                  Pessoa juridica (CNPJ)
+                </button>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label>
+                  <span className="mb-1 block text-sm font-medium text-stone-700">{labels.name}</span>
+>>>>>>> main
                   <input
                     required
                     className={inputClasses}
@@ -125,11 +207,27 @@ export default function RegisterPanel() {
                   />
                 </label>
                 <label>
+<<<<<<< HEAD
                   <span className="mb-1 block text-sm font-medium text-stone-700">CPF</span>
                   <input
                     className={inputClasses}
                     value={registerData.document}
                     onChange={(event) => setRegisterData((prev) => ({ ...prev, document: event.target.value }))}
+=======
+                  <span className="mb-1 block text-sm font-medium text-stone-700">{labels.document}</span>
+                  <input
+                    required
+                    inputMode="numeric"
+                    className={inputClasses}
+                    placeholder={documentType === "cnpj" ? "00.000.000/0000-00" : "000.000.000-00"}
+                    value={registerData.document}
+                    onChange={(event) =>
+                      setRegisterData((prev) => ({
+                        ...prev,
+                        document: formatDocument(event.target.value, documentType),
+                      }))
+                    }
+>>>>>>> main
                   />
                 </label>
                 <label className="sm:col-span-2">

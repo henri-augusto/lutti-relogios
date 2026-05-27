@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 
 import Link from "next/link";
@@ -47,4 +48,11 @@ export default function Footer() {
       </div>
     </footer>
   );
+=======
+import packageJson from "@/package.json";
+import FooterContent from "@/components/footer-content";
+
+export default function Footer() {
+  return <FooterContent version={packageJson.version} />;
+>>>>>>> main
 }
