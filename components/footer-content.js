@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const whatsappHref = `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5500000000000"}`;
+const whatsappHref = `https://wa.me/5511941100219`;
 
 export default function FooterContent({ version }) {
   const pathname = usePathname();
