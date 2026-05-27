@@ -70,8 +70,8 @@ export default function HeroBanner() {
               <div className="absolute left-1 top-2 z-0 h-[52%] w-[56%] sm:left-1.5 sm:top-2.5 lg:left-2 lg:top-3 lg:-rotate-[1.1deg]">
                 <div className="relative h-full w-full overflow-hidden rounded-[1.35rem] shadow-[0_28px_72px_-40px_rgba(28,25,23,0.14)]">
                   <Image
-                    src="/image-hero.jpeg"
-                    alt="Relógio premium em destaque"
+                    src="/image-hero-technos.png"
+                    alt="Relógio Technos em destaque"
                     fill
                     priority
                     className="object-cover object-[28%_22%]"

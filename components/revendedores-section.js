@@ -20,13 +20,12 @@ const revendedorBlocks = [
     title: "Estude, separe e economize.",
     description:
       "Analise nosso catálogo, separe os relógios conforme a demanda do seu negócio, ative descontos progressivos para grandes volumes e aproveite frete grátis após análise do pedido",
-    imageSrc:
-      "https://images.unsplash.com/photo-1526045431048-f857369baa09?auto=format&fit=crop&w=800&q=80",
-    imageAlt: "Vitrine com vários relógios em exposição",
+    imageSrc: "/image-revendedores-catalogo-technos.png",
+    imageAlt: "Relógio Technos automático em aço inox sendo segurado nas mãos",
   },
   {
     label: "Prepare-se para ganhar dinheiro",
-    title: "Margens atrativase reposição no ritmo da sua loja.",
+    title: "Margens atrativas e reposição no ritmo da sua loja.",
     description:
       "Trabalhe com relógios originais, tenha total segurança no negócio e ofereça garantia aos seus clientes.",
     imageSrc:
